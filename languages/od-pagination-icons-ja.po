@@ -2,10 +2,10 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: OD Pagination Icons 0.1.0\n"
+"Project-Id-Version: OD Pagination Icons 0.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/od-pagination-"
 "icons\n"
-"POT-Creation-Date: 2026-11-17T05:58:51+00:00\n"
+"POT-Creation-Date: 2026-11-17T06:32:22+00:00\n"
 "PO-Revision-Date: 2026-11-17 14:30+0900\n"
 "Last-Translator: Koji Kuno\n"
 "Language-Team: Japanese\n"
@@ -52,45 +52,45 @@ msgstr ""
 "で composer install を実行するか、GitHub Releases の ZIP をインストールしてく"
 "ださい。"
 
-#: build/index.js:1 src/editor/IconPicker.js:43
+#: build/index.js:1 src/editor/IconPicker.js:49
 msgid "Icon library"
 msgstr "アイコンライブラリ"
 
-#: build/index.js:1 src/editor/IconPicker.js:49
+#: build/index.js:1 src/editor/IconPicker.js:56
 msgid "Could not load icons. Check your connection and permissions."
 msgstr "アイコンを取得できませんでした。接続と権限を確認してください。"
 
-#: build/index.js:1 src/editor/IconPicker.js:57
+#: build/index.js:1 src/editor/IconPicker.js:64
 msgid "Retry"
 msgstr "再試行"
 
-#: build/index.js:1 src/editor/IconPicker.js:62
-msgid "Collection"
-msgstr "コレクション"
-
-#: build/index.js:1 src/editor/IconPicker.js:74
+#: build/index.js:1 src/editor/IconPicker.js:71
 msgid "Search icons"
 msgstr "アイコンを検索"
 
 #. translators: %d: number of matching icons.
-#: build/index.js:2 src/editor/IconPicker.js:88
+#: build/index.js:2 src/editor/IconPicker.js:114
 msgid "%d icons found"
 msgstr "%d 件のアイコン"
 
-#: build/index.js:2 src/editor/IconPicker.js:127
+#: build/index.js:2 src/editor/IconPicker.js:159
+msgid "No results found."
+msgstr "見つかりませんでした。"
+
+#: build/index.js:2 src/editor/IconPicker.js:174
 msgid "Previous results"
 msgstr "前の結果"
 
 #. translators: 1: current page, 2: total pages.
-#: build/index.js:3 src/editor/IconPicker.js:132
+#: build/index.js:3 src/editor/IconPicker.js:182
 msgid "%1$d / %2$d"
 msgstr "%1$d / %2$d"
 
-#: build/index.js:3 src/editor/IconPicker.js:142
+#: build/index.js:3 src/editor/IconPicker.js:197
 msgid "Next results"
 msgstr "次の結果"
 
-#: build/index.js:3 src/editor/IconPicker.js:163
+#: build/index.js:3 src/editor/IconPicker.js:231
 msgid ""
 "This icon is unavailable. The standard arrow will be used; the saved "
 "selection is retained."
@@ -98,11 +98,11 @@ msgstr ""
 "このアイコンは取得できません。標準矢印を表示します。保存済みの選択は保持され"
 "ます。"
 
-#: build/index.js:3 src/editor/IconPicker.js:170
+#: build/index.js:3 src/editor/IconPicker.js:238
 msgid "Choose icon"
 msgstr "アイコンを選択"
 
-#: build/index.js:3 src/editor/IconPicker.js:174
+#: build/index.js:3 src/editor/IconPicker.js:242
 msgid "Clear selection"
 msgstr "選択を解除"
 
@@ -126,7 +126,9 @@ msgstr ""
 msgid ""
 "For icons without text, first choose Arrow or Chevron in the standard arrow "
 "setting, then turn off Show label text."
-msgstr "アイコンのみ表示するには、標準矢印で「矢印」または「シェブロン」を選び、ラベルのテキストを非表示にしてください。"
+msgstr ""
+"アイコンのみ表示するには、標準矢印で「矢印」または「シェブロン」を選び、ラベ"
+"ルのテキストを非表示にしてください。"
 
 #: build/index.js:3 src/editor/extend-block.js:100
 msgid "Previous page icon"

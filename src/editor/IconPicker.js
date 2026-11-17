@@ -3,7 +3,7 @@ import {
 	Modal,
 	Notice,
 	SearchControl,
-	SelectControl,
+	TabPanel,
 	Spinner,
 } from '@wordpress/components';
 import { RawHTML, useState } from '@wordpress/element';
@@ -19,7 +19,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 		value.split( '/' )[ 0 ]
 	);
 	const [ search, setSearch ] = useState( '' );
-	const [ page, setPage ] = useState( 0 );
+	const [ page, setPage ] = useState( null );
 	const available = ( collections.data || [] ).filter(
 		( item ) => item.public !== false
 	);
@@ -36,111 +36,190 @@ function IconLibrary( { value, onChange, onClose } ) {
 	);
 	const filtered = filterIcons( icons.data || [], search );
 	const pages = Math.max( 1, Math.ceil( filtered.length / PAGE_SIZE ) );
-	const currentPage = Math.min( page, pages - 1 );
+	const selectedPage = Math.max(
+		0,
+		Math.floor(
+			filtered.findIndex( ( icon ) => icon.name === value ) / PAGE_SIZE
+		)
+	);
+	const currentPage = Math.min( page ?? selectedPage, pages - 1 );
 	const error = collections.error || icons.error;
 	return (
 		<Modal
 			title={ __( 'Icon library', 'od-pagination-icons' ) }
 			onRequestClose={ onClose }
 			className="odpi-library"
+			isFullScreen
 		>
-			{ error && (
-				<Notice status="error" isDismissible={ false }>
-					{ __(
-						'Could not load icons. Check your connection and permissions.',
-						'od-pagination-icons'
-					) }
-					<Button
-						variant="secondary"
-						onClick={ () => setRetry( retry + 1 ) }
+			<div className="odpi-library-layout">
+				{ error && (
+					<Notice
+						className="odpi-library-error"
+						status="error"
+						isDismissible={ false }
 					>
-						{ __( 'Retry', 'od-pagination-icons' ) }
-					</Button>
-				</Notice>
-			) }
-			<SelectControl
-				label={ __( 'Collection', 'od-pagination-icons' ) }
-				value={ collection || '' }
-				options={ available.map( ( item ) => ( {
-					label: item.label,
-					value: item.slug,
-				} ) ) }
-				onChange={ ( slug ) => {
-					setCollection( slug );
-					setPage( 0 );
-				} }
-			/>
-			<SearchControl
-				label={ __( 'Search icons', 'od-pagination-icons' ) }
-				value={ search }
-				onChange={ ( text ) => {
-					setSearch( text );
-					setPage( 0 );
-				} }
-			/>
-			<div aria-live="polite" role="status">
-				{ ( collections.loading || icons.loading ) && <Spinner /> }
-				{ ! error &&
-					! collections.loading &&
-					! icons.loading &&
-					sprintf(
-						/* translators: %d: number of matching icons. */
-						__( '%d icons found', 'od-pagination-icons' ),
-						filtered.length
-					) }
-			</div>
-			<div className="odpi-icon-grid">
-				{ filtered
-					.slice(
-						currentPage * PAGE_SIZE,
-						( currentPage + 1 ) * PAGE_SIZE
-					)
-					.map( ( icon ) => (
+						{ __(
+							'Could not load icons. Check your connection and permissions.',
+							'od-pagination-icons'
+						) }
 						<Button
-							key={ icon.name }
-							label={ icon.name }
-							aria-pressed={ value === icon.name }
-							variant={
-								value === icon.name ? 'primary' : 'secondary'
-							}
-							onClick={ () => {
-								onChange( icon.name );
-								onClose();
-							} }
+							variant="secondary"
+							onClick={ () => setRetry( retry + 1 ) }
 						>
-							<span
-								className="odpi-picker-icon"
-								aria-hidden="true"
-							>
-								<RawHTML>{ icon.content }</RawHTML>
-							</span>
-							<span>{ icon.label || icon.name }</span>
+							{ __( 'Retry', 'od-pagination-icons' ) }
 						</Button>
-					) ) }
-			</div>
-			<div className="odpi-pages">
-				<Button
-					variant="secondary"
-					disabled={ currentPage === 0 }
-					onClick={ () => setPage( currentPage - 1 ) }
-				>
-					{ __( 'Previous results', 'od-pagination-icons' ) }
-				</Button>
-				<span>
-					{ sprintf(
-						/* translators: 1: current page, 2: total pages. */
-						__( '%1$d / %2$d', 'od-pagination-icons' ),
-						currentPage + 1,
-						pages
-					) }
-				</span>
-				<Button
-					variant="secondary"
-					disabled={ currentPage + 1 >= pages }
-					onClick={ () => setPage( currentPage + 1 ) }
-				>
-					{ __( 'Next results', 'od-pagination-icons' ) }
-				</Button>
+					</Notice>
+				) }
+
+				<div className="odpi-library-search">
+					<SearchControl
+						label={ __( 'Search icons', 'od-pagination-icons' ) }
+						value={ search }
+						onChange={ ( text ) => {
+							setSearch( text );
+							setPage( 0 );
+						} }
+					/>
+				</div>
+				{ available.length > 0 && (
+					<TabPanel
+						className="odpi-library-tabs"
+						orientation="vertical"
+						initialTabName={ collection }
+						tabs={ available.map( ( item ) => ( {
+							name: item.slug,
+							title: item.label,
+						} ) ) }
+						onSelect={ ( slug ) => {
+							if ( slug !== collection ) {
+								setCollection( slug );
+								setPage( 0 );
+							}
+						} }
+					>
+						{ () => (
+							<>
+								<div
+									aria-live="polite"
+									role="status"
+									className={
+										collections.loading || icons.loading
+											? 'odpi-library-loading'
+											: 'screen-reader-text'
+									}
+								>
+									{ ( collections.loading ||
+										icons.loading ) && <Spinner /> }
+									{ ! error &&
+										! collections.loading &&
+										! icons.loading &&
+										sprintf(
+											/* translators: %d: number of matching icons. */
+											__(
+												'%d icons found',
+												'od-pagination-icons'
+											),
+											filtered.length
+										) }
+								</div>
+								<div className="odpi-icon-grid">
+									{ filtered
+										.slice(
+											currentPage * PAGE_SIZE,
+											( currentPage + 1 ) * PAGE_SIZE
+										)
+										.map( ( icon ) => (
+											<Button
+												key={ icon.name }
+												className="odpi-library-item"
+												label={ icon.name }
+												aria-pressed={
+													value === icon.name
+												}
+												variant={
+													value === icon.name
+														? 'primary'
+														: undefined
+												}
+												onClick={ () => {
+													onChange( icon.name );
+													onClose();
+												} }
+											>
+												<span
+													className="odpi-picker-icon odpi-library-icon"
+													aria-hidden="true"
+												>
+													<RawHTML>
+														{ icon.content }
+													</RawHTML>
+												</span>
+												<span className="odpi-library-item-title">
+													{ icon.label || icon.name }
+												</span>
+											</Button>
+										) ) }
+								</div>
+								{ ! error &&
+									! icons.loading &&
+									! filtered.length && (
+										<p className="odpi-library-empty">
+											{ __(
+												'No results found.',
+												'od-pagination-icons'
+											) }
+										</p>
+									) }
+								{ pages > 1 && (
+									<div className="odpi-pages">
+										<Button
+											variant="tertiary"
+											disabled={ currentPage === 0 }
+											onClick={ () =>
+												setPage( currentPage - 1 )
+											}
+										>
+											{ __(
+												'Previous results',
+												'od-pagination-icons'
+											) }
+										</Button>
+										<span>
+											{ sprintf(
+												/* translators: 1: current page, 2: total pages. */
+												__(
+													'%1$d / %2$d',
+													'od-pagination-icons'
+												),
+												currentPage + 1,
+												pages
+											) }
+										</span>
+										<Button
+											variant="tertiary"
+											disabled={
+												currentPage + 1 >= pages
+											}
+											onClick={ () =>
+												setPage( currentPage + 1 )
+											}
+										>
+											{ __(
+												'Next results',
+												'od-pagination-icons'
+											) }
+										</Button>
+									</div>
+								) }
+							</>
+						) }
+					</TabPanel>
+				) }
+				{ collections.loading && (
+					<div className="odpi-library-loading">
+						<Spinner />
+					</div>
+				) }
 			</div>
 		</Modal>
 	);

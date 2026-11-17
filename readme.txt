@@ -4,7 +4,7 @@ Tags: pagination, icons, query-loop, block-editor
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 コアのリンク機能と元の標準矢印設定を使用できます。
 
 == Changelog ==
+
+= 0.1.1 =
+* アイコン選択モーダルをコアに近い全画面表示・コレクションタブ・配色へ調整。
+* 選択済みアイコンを含むページから開くよう改善。
+* モバイルでの表示と空の検索結果の案内を改善。
 
 = 0.1.0 =
 * MVP: 前後個別のアイコン選択、検索、プレビュー、SVG描画、フォールバック。

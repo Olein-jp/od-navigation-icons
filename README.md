@@ -62,12 +62,12 @@ npm run env:cli -- i18n make-json wp-content/plugins/od-pagination-icons/languag
 
 ```sh
 npm run build
-npm run release:build -- --version 0.1.0
+npm run release:build -- --version 0.1.1
 ```
 
 出力は `dist/od-pagination-icons.zip`。PHP、ビルド成果物、翻訳、既存の `inc2734/wp-github-plugin-updater` を含み、開発ツール・テスト・ローカル設定は含めません。
 
-数値3桁のバージョンタグ（例: `0.1.0`）をpushすると、GitHub Actionsが品質確認・ビルドを行い、インストール可能なZIPをGitHub Releasesへ添付します。タグとPHPヘッダー・package.json・readme.txtのバージョンを合わせてください。`v`接頭辞やプレリリースタグは対象外です。公開結果はGitHub ReleasesとActionsで確認できます。
+数値3桁のバージョンタグ（例: `0.1.1`）をpushすると、GitHub Actionsが品質確認・ビルドを行い、インストール可能なZIPをGitHub Releasesへ添付します。タグとPHPヘッダー・package.json・readme.txtのバージョンを合わせてください。`v`接頭辞やプレリリースタグは対象外です。公開結果はGitHub ReleasesとActionsで確認できます。
 
 ## 技術情報と制約
 

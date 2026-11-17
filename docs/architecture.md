@@ -14,7 +14,7 @@ HTML APIでコアのアンカーと矢印span、その直下の矢印テキス�
 
 ## エディター
 
-公開された再利用可能なIcon Pickerがないため、componentsのModal、SelectControl、SearchControl、Buttonで実装する。標準REST権限とapiFetchのnonce処理を利用する。コレクション単位の遅延取得、リクエスト共有、ローカル検索、48件のページ分割を行う。7.1のRESTはサーバーでのページ分割に対応しないため、1コレクション分は一括受信する。
+公開された再利用可能なIcon Pickerがないため、componentsのModal、TabPanel、SearchControl、Buttonで実装する。標準REST権限とapiFetchのnonce処理を利用する。コアに合わせて全画面モーダル、左側の検索・コレクションタブ、150px基準のグリッドと24pxアイコンを配置する。配色とフォーカス表示はWordPress標準コンポーネントを使用する。コレクション単位の遅延取得、リクエスト共有、ローカル検索、48件のページ分割を行う。7.1のRESTはサーバーでのページ分割に対応しないため、1コレクション分は一括受信する。
 
 プレビューはBlockListBlockのwrapperPropsからCSS変数としてSVG画像を渡す。単色SVGはmaskでcurrentColorを継承し、固定色を持つSVGは背景画像で元の色を表示する。コアのリンク・テキスト編集要素はそのまま使う。保存HTMLにはプレビュー属性を含めない。DOMの監視・直接変更・内部コンポーネントのimportはしない。
 

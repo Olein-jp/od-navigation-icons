@@ -20,6 +20,7 @@ async function selectPagination( page ) {
 		const find = ( blocks ) => blocks.flatMap( ( block ) => [ block, ...find( block.innerBlocks || [] ) ] );
 		const parent = find( editor.getBlocks() ).find( ( block ) => block.name === 'core/query-pagination' );
 		wp.data.dispatch( 'core/block-editor' ).selectBlock( parent.clientId );
+		wp.data.dispatch( 'core/interface' ).enableComplementaryArea( 'core', 'edit-post/block' );
 	} );
 }
 
@@ -36,7 +37,7 @@ test( 'アイコンの選択・キーボード操作・保存とエディター�
 	await page.getByRole( 'button', { name: /Choose icon|アイコンを選択/ } ).last().click();
 	const modal = page.getByRole( 'dialog' );
 	await expect( modal ).toBeVisible();
-	await modal.getByLabel( /Collection|コレクション/, { exact: true } ).selectOption( 'odpi-e2e' );
+	await modal.getByRole( 'tab', { name: 'ODPI E2E Collection', exact: true } ).click();
 	await expect( modal.locator( '.odpi-icon-grid button' ) ).toHaveCount( 48 );
 	const search = modal.getByRole( 'searchbox' );
 	await search.fill( 'test-1199' );

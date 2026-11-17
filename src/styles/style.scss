@@ -1,0 +1,48 @@
+.odpi-icon {
+	width: 1em;
+	height: 1em;
+	fill: currentcolor;
+	flex-shrink: 0;
+	vertical-align: -0.125em;
+}
+
+// コアの矢印spanの論理方向の余白をそのまま利用する。
+.wp-block-query-pagination-previous-arrow:has(.odpi-icon),
+.wp-block-query-pagination-next-arrow:has(.odpi-icon) {
+	display: inline-block;
+	transform: none !important;
+}
+
+.wp-block-query-pagination .odpi-no-label {
+	margin-inline: 0;
+}
+
+.odpi-preview .wp-block-query-pagination-previous-arrow,
+.odpi-preview .wp-block-query-pagination-next-arrow {
+	display: inline-block;
+	position: relative;
+	width: 1em;
+	height: 1em;
+	text-indent: -9999px;
+	vertical-align: -0.125em;
+	overflow: hidden;
+	transform: none !important;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: currentcolor;
+		mask: var(--odpi-preview) center / contain no-repeat;
+	}
+}
+
+.odpi-preview[aria-label] > span {
+	margin-inline: 0;
+}
+
+.odpi-preview-fixed .wp-block-query-pagination-previous-arrow::before,
+.odpi-preview-fixed .wp-block-query-pagination-next-arrow::before {
+	mask: none;
+	background: var(--odpi-preview) center / contain no-repeat;
+}

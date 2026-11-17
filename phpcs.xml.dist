@@ -2,6 +2,7 @@
 <ruleset name="OD Pagination Icons">
   <description>OD Pagination Icons の WordPress コーディング規約。</description>
   <file>od-pagination-icons.php</file>
+  <file>includes</file>
   <arg name="extensions" value="php"/>
   <arg value="sp"/>
   <rule ref="WordPress"/>
@@ -16,6 +17,8 @@
     <properties>
       <property name="prefixes" type="array">
         <element value="od_pagination_icons"/>
+        <element value="odpi"/>
+        <element value="ODPI"/>
       </property>
     </properties>
   </rule>

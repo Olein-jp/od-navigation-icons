@@ -2,10 +2,10 @@
 /**
  * Plugin Name: OD Pagination Icons
  * Plugin URI: https://github.com/Olein-jp/od-pagination-icons
- * Description: Development foundation for the OD Pagination Icons plugin.
- * Version: 0.0.0
- * Requires at least: 5.9
- * Requires PHP: 7.4
+ * Description: Choose registered WordPress icons for Query Pagination links.
+ * Version: 0.1.0
+ * Requires at least: 7.1
+ * Requires PHP: 8.1
  * Author: Koji Kuno
  * Author URI: https://olein-design.com
  * License: GPL-2.0-or-later
@@ -20,6 +20,13 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+define( 'ODPI_VERSION', '0.1.0' );
+define( 'ODPI_FILE', __FILE__ );
+
+require_once __DIR__ . '/includes/block-registration.php';
+require_once __DIR__ . '/includes/render.php';
+require_once __DIR__ . '/includes/assets.php';
 
 /**
  * 翻訳を登録する。

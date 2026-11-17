@@ -30,9 +30,14 @@ def main():
         plugin = Path(temporary) / SLUG
         plugin.mkdir()
         # 配布対象を明示し、ローカル設定や開発依存の混入を防ぐ。
-        for name in (f"{SLUG}.php", "README.md", "LICENSE", "composer.json", "composer.lock"):
+        for name in (f"{SLUG}.php", "readme.txt", "README.md", "LICENSE", "composer.json", "composer.lock"):
             shutil.copy2(ROOT / name, plugin / name)
         shutil.copytree(ROOT / "languages", plugin / "languages")
+        for name in ("includes", "build", "docs"):
+            shutil.copytree(ROOT / name, plugin / name)
+        for name in ("index.js", "index.asset.php", "index.css", "style-index.css"):
+            if not (plugin / "build" / name).is_file():
+                raise RuntimeError(f"ビルド成果物がありません: {name}")
         subprocess.run(
             ["composer", "install", "--no-dev", "--prefer-dist", "--no-interaction",
              "--no-progress", "--no-scripts", "--optimize-autoloader",

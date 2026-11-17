@@ -1,84 +1,82 @@
 # OD Pagination Icons
 
-OD Pagination Icons の開発用ひな形です。ページネーションの表示機能は、これから実装します。
+クエリーループの「ページ送り」ブロックを拡張し、前後のリンクに WordPress Icons API の登録済みアイコンを設定するプラグインです。コア・テーマ・プラグインのコレクションを利用でき、URL生成・ページ判定・Enhanced Paginationはコアが処理します。
 
-## 要件
+## 要件とインストール
 
-- プラグイン: WordPress 5.9 以上、PHP 7.4 以上
-- 開発: Docker、Node.js 24（`.nvmrc`）、npm、PHP、Composer 2
-- ZIP 作成: Python 3
+- WordPress 7.1 以上、PHP 8.1 以上
+- 開発: Docker、Node.js 24.18 以上（`.nvmrc`）、npm、PHP、Composer 2、Python 3
 
-## 開発を始める
+配布用の `dist/od-pagination-icons.zip` または GitHub Releases に添付されたZIPを、WordPressの「プラグインを追加」からアップロードし、有効化します。GitHubが自動生成するSource code ZIPには実行時依存が含まれません。
+
+## 使い方
+
+1. 投稿・固定ページまたはサイトエディターで、クエリーループ内の親「ページ送り」ブロックを選択します。
+2. 設定サイドバーの「カスタムアイコンを使用」を有効にします。
+3. 「前のページ」「次のページ」それぞれで「アイコンを選択」を開き、コレクションと検索で選択します。
+4. コアの「ラベルのテキストを表示」で、アイコンと文字・アイコンのみを切り替え、保存します。標準矢印が「なし」の場合は、先に「矢印」または「シェブロン」を選択するとラベル表示をオフにできます。
+
+未選択・未登録アイコンは標準矢印になります。外部アイコンの提供元を停止しても識別子を保持し、再登録後に再表示します。カスタム設定を無効にすると以前の標準矢印設定へ戻り、本プラグインを停止してもコアのページ送りリンクは機能します。
+
+既存のコア矢印コントロールは残ります。カスタムモード中はカスタムアイコンの表示が優先され、コアの矢印コントロールによる変更はモード解除後に反映されます。
+
+## 開発と検証
 
 ```sh
 nvm use
 npm ci
 composer install
+npm run build
 npm run env:start
+npm run env:cli -- plugin activate od-pagination-icons
+composer lint
+npm run check
+npm run test:php
 ```
 
-`wp-env` はこのディレクトリをプラグインとしてマウントします。起動時に表示される URL と認証情報で WordPress にログインしてください。必要なら `npm run env:cli -- plugin activate od-pagination-icons` で有効化します。
+`wp-env` が起動時に表示するURLを使用してください。自動ポート割当が有効で、今回の検証環境は `http://localhost:8890` でした。
+
+ブラウザテストは専用ページ・テンプレート・投稿と1200件の外部アイコンを一時作成します。ローカル開発環境で実行し、最後に必ずcleanupを実行してください。テストは対象プラグインの停止・再有効化も行います。
 
 ```sh
-composer lint                 # WPCS
-composer format               # 自分で実行した場合のみ自動修正
-npm run env:status
-npm run env:logs
-npm run env:cli -- plugin list
-npm run env:stop
+npm run test:e2e:setup
+# ローカルChromeを使用。CIではODPI_BROWSER=chromiumを指定。
+WP_BASE_URL=http://localhost:8890 npm run test:e2e
+npm run test:e2e:cleanup
 ```
 
-Docker 内で Composer を使う場合:
+PHPテストは実コアを使うWP-CLI統合テストです。作成した投稿はfinallyで削除します。ブラウザテストはPlaywrightで選択・保存・プレビュー・ページ遷移・外部登録解除・プラグイン停止を確認します。
 
-```sh
-npx wp-env run cli --env-cwd=wp-content/plugins/od-pagination-icons composer install
-```
+## 翻訳
 
-個人用のポート等は `.wp-env.override.json` に設定してください。このファイルは Git 管理対象外です。
-
-`autoPort` を有効にしているため、ほかの開発環境とポートが重なる場合は空きポートを使用します。wp-env 12.1.0 は既定でテスト環境も起動し、非推奨の動作として警告します。構成には非推奨の `testsEnvironment` キーを追加していません。
-
-開発依存の注意: 現在の `npm audit` は wp-env の推移依存に 11 件（high 1 件、moderate 10 件）を報告します。npm が提示する自動修正は wp-env のメジャーダウングレードを伴うため適用していません。npm 依存は配布 ZIP には同梱しません。
-
-## 多言語化
-
-テキストドメインは `od-pagination-icons` です。表示文字列には `__()`、`esc_html_e()` 等を使用し、翻訳は `languages/` に配置します。`init` で翻訳を登録します。
+日本語PO/MOとエディター用JSONを同梱します。すべての独自UIは `od-pagination-icons` ドメインです。
 
 ```sh
 npm run i18n:pot
-# POT の変更を各言語の PO に反映し、翻訳する。
+# POを更新・翻訳後
 npm run i18n:mo
+npm run env:cli -- i18n make-json wp-content/plugins/od-pagination-icons/languages --no-purge
 ```
 
-日本語の `od-pagination-icons-ja.po` とコンパイル済み MO を同梱しています。他言語は `od-pagination-icons-<locale>.po` を追加して MO を生成してください。POT・PO・MO は更新後にコミットします。
-
-## GitHub からの更新
-
-[inc2734/wp-github-plugin-updater](https://github.com/inc2734/wp-github-plugin-updater) を使用します。公開リポジトリ `Olein-jp/od-pagination-icons` の最新の正式な GitHub Release を参照します。初回は Releases の `od-pagination-icons.zip` を WordPress にインストールしてください。それ以降は、新しいバージョンが公開されると WordPress の更新画面から更新できます。
-
-GitHub が自動生成する Source code ZIP には Composer の依存が入らないため、必ず添付された `od-pagination-icons.zip` を使用してください。
-
-## リリース
-
-`0.0.0` のような `数字.数字.数字` 形式のタグを push すると、GitHub Actions が WPCS とバージョンの一致を確認し、配布 ZIP を Releases に添付します。`v` 接頭辞とプレリリースタグは対象外です。タグ名とメイン PHP の `Version` は一致させてください。`package.json` のバージョンも併せて更新し、`npm install --package-lock-only` で lockfile に反映します。
-
-初回リリースの操作例（実行すると公開されます）:
+## ビルドとリリース
 
 ```sh
-git tag 0.0.0
-git push origin 0.0.0
+npm run build
+npm run release:build -- --version 0.1.0
 ```
 
-次回以降はバージョンを更新してコミット・push してから、そのバージョンのタグを作成します。Actions は標準の `GITHUB_TOKEN` を使用するため、追加のトークン登録は不要です。
+出力は `dist/od-pagination-icons.zip`。PHP、ビルド成果物、翻訳、既存の `inc2734/wp-github-plugin-updater` を含み、開発ツール・テスト・ローカル設定は含めません。
 
-ローカルで ZIP だけを作る場合:
+数値3桁のバージョンタグ（例: `0.1.0`）をpushすると、GitHub Actionsが品質確認・ビルドを行い、インストール可能なZIPをGitHub Releasesへ添付します。タグとPHPヘッダー・package.json・readme.txtのバージョンを合わせてください。`v`接頭辞やプレリリースタグは対象外です。公開結果はGitHub ReleasesとActionsで確認できます。
 
-```sh
-npm run release:build -- --version 0.0.0
-```
+## 技術情報と制約
 
-出力は `dist/od-pagination-icons.zip`。ZIP の先頭ディレクトリは `od-pagination-icons/` です。実行時 Composer 依存と翻訳を含み、開発ツール・ローカル設定を含めません。配布対象を追加する際は `scripts/build-release.py` の許可リスト、PHP ファイルを追加する際は `phpcs.xml.dist` の検査対象も更新してください。
+- [技術仕様](docs/architecture.md)
+- [Phase 1と検証結果](docs/validation.md)
+- [互換性と受け入れテスト](docs/compatibility.md)
 
-## ライセンス
+WordPress 7.1のRESTはサーバーでのページ分割に対応していません。コレクション単位で取得し、表示を48件ずつに制限します。エディター内のプレビューは公開API経由のCSS描画で、フロントエンドは `wp_get_icon()` のSVGです。CSPでdata画像を禁止している環境ではエディタープレビューを別途確認してください。
+
+コメントのページ送り・投稿ナビゲーション・SVGアップロード・アイコン登録管理・専用サイズ/色設定は対象外です。npm依存は開発時に使用し、配布ZIPへは含めません。依存監査の結果は検証文書に記録しています。
 
 GPL-2.0-or-later。詳細は `LICENSE` を参照してください。

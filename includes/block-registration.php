@@ -22,6 +22,10 @@ function odpi_register_attributes( $args, $name ) {
 			'type'    => 'string',
 			'default' => '',
 		),
+		'odpiIconSize'     => array(
+			'type'    => 'string',
+			'default' => '',
+		),
 		'odpiNextIcon'     => array(
 			'type'    => 'string',
 			'default' => '',
@@ -34,6 +38,18 @@ function odpi_register_attributes( $args, $name ) {
 	if ( 'core/query-pagination' === $name ) {
 		$args['attributes']       = array_merge( $args['attributes'] ?? array(), $attributes );
 		$args['provides_context'] = array_merge( $args['provides_context'] ?? array(), $context );
+	} elseif ( 'core/post-navigation-link' === $name ) {
+		$args['attributes'] = array_merge(
+			$args['attributes'] ?? array(),
+			array(
+				'odpiEnabled'  => $attributes['odpiEnabled'],
+				'odpiIconSize' => $attributes['odpiIconSize'],
+				'odpiIcon'     => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+			)
+		);
 	} elseif ( in_array( $name, array( 'core/query-pagination-previous', 'core/query-pagination-next' ), true ) ) {
 		$args['uses_context'] = array_values( array_unique( array_merge( $args['uses_context'] ?? array(), array_keys( $context ) ) ) );
 	}
@@ -55,3 +71,17 @@ function odpi_render_context( $context, $parsed ) {
 	return $context;
 }
 add_filter( 'render_block_context', 'odpi_render_context', 10, 2 );
+
+/**
+ * 投稿ナビゲーションの保存値を保ち、描画時だけ矢印を用意する。
+ *
+ * @param array $parsed 解析済みブロック.
+ * @return array
+ */
+function odpi_post_navigation_data( $parsed ) {
+	if ( 'core/post-navigation-link' === $parsed['blockName'] && ! empty( $parsed['attrs']['odpiEnabled'] ) ) {
+		$parsed['attrs']['arrow'] = 'arrow';
+	}
+	return $parsed;
+}
+add_filter( 'render_block_data', 'odpi_post_navigation_data' );

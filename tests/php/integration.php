@@ -18,6 +18,8 @@ function odpi_assert( $condition, $message ) {
 $odpi_ids = array();
 $odpi_original_get = $_GET;
 $odpi_original_query = $GLOBALS['wp_query'];
+$odpi_original_post = $GLOBALS['post'] ?? null;
+$odpi_term = 0;
 $odpi_original_paged = $GLOBALS['paged'] ?? null;
 try {
 	odpi_assert( function_exists( 'wp_get_icon' ), 'Icons APIが存在する' );
@@ -39,7 +41,7 @@ try {
 	$outside = '<a class="wp-block-query-pagination-next"></a><span class="wp-block-query-pagination-next-arrow">→</span>';
 	odpi_assert( $outside === odpi_replace_arrow( $outside, $svg, 'next' ), '別要素の矢印を誤って置換しない' );
 	foreach ( range( 1, 4 ) as $index ) {
-		$odpi_ids[] = wp_insert_post( array( 'post_title' => 'ODPI検証 ' . $index, 'post_status' => 'publish', 'post_type' => 'post' ) );
+		$odpi_ids[] = wp_insert_post( array( 'post_title' => 'ODPI検証 ' . $index, 'post_date' => '2026-01-0' . $index . ' 12:00:00', 'post_status' => 'publish', 'post_type' => 'post' ) );
 	}
 	$_GET['query-9182-page'] = 2;
 	$markup = '<!-- wp:query {"queryId":9182,"query":{"perPage":1,"postType":"post","order":"desc","orderBy":"date","inherit":false}} --><div class="wp-block-query"><!-- wp:query-pagination {"paginationArrow":"none","showLabel":false,"odpiEnabled":true,"odpiPreviousIcon":"core/plus","odpiNextIcon":"odpi-test/star"} --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination --></div><!-- /wp:query -->';
@@ -62,11 +64,68 @@ try {
 	$GLOBALS['paged'] = 2;
 	$inherited = do_blocks( str_replace( '"inherit":false', '"inherit":true', $markup ) );
 	odpi_assert( str_contains( $inherited, 'odpi-icon' ), '親クエリーを継承する場合もアイコンを描画する' );
+	$sized = do_blocks( str_replace( '"odpiEnabled":true', '"odpiIconSize":"32px","odpiEnabled":true', $markup ) );
+	odpi_assert( str_contains( $sized, '--odpi-icon-size:32px' ), 'サイズを親からページ送りへ渡す' );
+	foreach ( array( '32px', '1.5em', '.75rem' ) as $size ) {
+		odpi_assert( str_contains( odpi_get_icon( 'core/plus', $size ), '--odpi-icon-size:' . $size ), '許可した寸法をSVGへ反映する' );
+	}
+	foreach ( array( '', '0px', '-1em', '24%', '2vw', "24px;display:none", '2rem" onload="alert(1)', array( '24px' ) ) as $size ) {
+		odpi_assert( ! str_contains( odpi_get_icon( 'core/plus', $size ), '--odpi-icon-size' ), '無効な寸法では文字サイズ連動へ戻る' );
+	}
+	$label = '<span class="wp-block-post-navigation-link__arrow-next">→</span>';
+	$post_html = '<div class="wp-block-post-navigation-link"><a href="/next" rel="next">' . $label . '</a><span class="wp-block-post-navigation-link__arrow-next" aria-hidden="true">→</span></div>';
+	$post_attrs = array( 'attrs' => array( 'odpiEnabled' => true, 'odpiIcon' => 'core/plus' ) );
+	odpi_assert( str_contains( odpi_render_post_icon( $post_html, $post_attrs ), $label . '</a><span class="wp-block-post-navigation-link__arrow-next" aria-hidden="true">' . odpi_get_icon( 'core/plus' ) ), 'ラベルの同名クラスを変更せず兄弟の矢印だけを置換する' );
+	$outside = '<div class="wp-block-post-navigation-link"></div><span class="wp-block-post-navigation-link__arrow-next">→</span>';
+	odpi_assert( $outside === odpi_render_post_icon( $outside, $post_attrs ), '投稿ナビゲーションの外側を変更しない' );
+	$post_block = WP_Block_Type_Registry::get_instance()->get_registered( 'core/post-navigation-link' );
+	odpi_assert( isset( $post_block->attributes['odpiIcon'], $post_block->attributes['odpiIconSize'] ), '投稿ナビゲーション属性が登録される' );
+	$term = wp_insert_term( 'ODPI navigation ' . wp_unique_id(), 'category' );
+	$odpi_term = $term['term_id'];
+	foreach ( $odpi_ids as $id ) {
+		wp_set_post_categories( $id, array( $odpi_term ) );
+	}
+	$GLOBALS['wp_query'] = new WP_Query( array( 'p' => $odpi_ids[1] ) );
+	$GLOBALS['post'] = get_post( $odpi_ids[1] );
+	setup_postdata( $GLOBALS['post'] );
+	foreach ( array( 'previous' => '←', 'next' => '→' ) as $direction => $arrow ) {
+		foreach ( array( array( false, false ), array( true, false ), array( true, true ) ) as $display ) {
+			$attrs = array( 'type' => $direction, 'arrow' => 'none', 'label' => '移動 <em>ラベル</em>', 'showTitle' => $display[0], 'linkLabel' => $display[1], 'taxonomy' => 'category', 'odpiEnabled' => true, 'odpiIcon' => 'core/plus', 'odpiIconSize' => '2rem' );
+			$render = static function ( $attrs ) {
+				return do_blocks( '<!-- wp:post-navigation-link ' . wp_json_encode( $attrs ) . ' /-->' );
+			};
+			$custom = $render( $attrs );
+			$core_attrs = array_merge( $attrs, array( 'odpiEnabled' => false, 'arrow' => 'arrow' ) );
+			$core = $render( $core_attrs );
+			odpi_assert( str_contains( $custom, 'odpi-icon' ), '前後の投稿でカスタムアイコンを表示する' );
+			odpi_assert( str_replace( $arrow, odpi_get_icon( 'core/plus', '2rem' ), $core ) === $custom, 'コアのURL・タイトル・ラベル・分類設定を保持する' );
+			odpi_assert( ! str_contains( $render( array_merge( $attrs, array( 'odpiEnabled' => false ) ) ), '__arrow-' ), '無効化すると元の矢印なしへ戻る' );
+			odpi_assert( $core === $render( array_merge( $attrs, array( 'odpiIcon' => 'missing/icon' ) ) ), '未登録アイコンは標準矢印へ戻る' );
+			odpi_assert( $core === $render( array_merge( $attrs, array( 'odpiIcon' => '' ) ) ), '未選択でも標準矢印へ戻る' );
+		}
+		$boundary = 'previous' === $direction ? $odpi_ids[0] : $odpi_ids[3];
+		$GLOBALS['wp_query'] = new WP_Query( array( 'p' => $boundary ) );
+		$GLOBALS['post'] = get_post( $boundary );
+		setup_postdata( $GLOBALS['post'] );
+		odpi_assert( ! str_contains( $render( $attrs ), 'odpi-icon' ) && ! str_contains( $render( $attrs ), '<a ' ), '隣接投稿がない場合はリンクを作らない' );
+		$GLOBALS['wp_query'] = new WP_Query( array( 'p' => $odpi_ids[1] ) );
+		$GLOBALS['post'] = get_post( $odpi_ids[1] );
+		setup_postdata( $GLOBALS['post'] );
+	}
+	$GLOBALS['wp_query'] = new WP_Query( array( 'post_type' => 'post' ) );
+	odpi_assert( '' === $render( $attrs ), '一覧ではコア同様に投稿ナビゲーションを出力しない' );
 	WP_CLI::success( $odpi_checks . ' 件のPHP統合検証に合格しました。' );
 } finally {
 	$_GET = $odpi_original_get;
 	$GLOBALS['wp_query'] = $odpi_original_query;
 	$GLOBALS['paged'] = $odpi_original_paged;
+	$GLOBALS['post'] = $odpi_original_post;
+	if ( $odpi_original_post ) {
+		setup_postdata( $odpi_original_post );
+	}
+	if ( $odpi_term ) {
+		wp_delete_term( $odpi_term, 'category' );
+	}
 	foreach ( $odpi_ids as $id ) {
 		wp_delete_post( $id, true );
 	}

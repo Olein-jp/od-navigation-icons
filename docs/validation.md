@@ -46,3 +46,11 @@ WordPress 7.1.4のIconブロックと同一ブラウザで比較した。公開M
 - [REST Iconsコントローラー](https://github.com/WordPress/wordpress-develop/blob/trunk/src/wp-includes/rest-api/endpoints/class-wp-rest-icons-controller.php)
 - [Paginationのコア実装](https://github.com/WordPress/gutenberg/tree/trunk/packages/block-library/src/query-pagination)
 - 具体的な互換性判断は上記trunkだけでなく、ローカルに導入済みの7.1.4の実装を基準とする。
+
+## 投稿ナビゲーション・サイズ設定の追加検証（2026-11-18）
+
+- `composer lint`、`npm run check` に合格。JavaScriptは2スイート15件。
+- `npm run test:php`：68件に合格。前後の投稿、ラベルとタイトルの表示、分類による絞り込み、隣接投稿なし、一覧での非表示、未選択・未登録アイコンのフォールバック、無効化時の標準矢印復帰を確認。コア出力のリンク部分を保持し、ラベル内の同名クラスやブロック外の要素を置換しないことも確認。
+- サイズは px・em・rem を受け付け、無効値・CSS注入形式・ゼロ・負数では文字サイズ連動へ戻ることを確認。
+- `WP_BASE_URL=http://localhost:8895 npm run test:e2e`：ローカルChromeで7件に合格。既存のページ送りに加え、投稿ナビゲーションのアイコン選択、サイズ・単位変更、空欄へのリセット、保存・再読込、公開画面での実寸、元の矢印設定の保持を確認。
+- 日本語翻訳と配布用ビルドを更新。一時投稿・テンプレート・アイコンコレクションはcleanupで削除。

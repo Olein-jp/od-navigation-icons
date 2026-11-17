@@ -4,15 +4,17 @@ Tags: pagination, icons, query-loop, block-editor
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.1
+Stable tag: 0.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-クエリーループのページ送りに、WordPress Icons API の登録済みアイコンを設定します。
+ページ送りと前後の投稿リンクに、WordPress Icons API の登録済みアイコンとサイズを設定します。
 
 == Description ==
 
 「ページ送り」ブロックの設定でカスタムアイコンを有効にし、前後それぞれのアイコンを選択できます。
+「前の投稿」「次の投稿」ブロックでは、それぞれの設定からアイコンを選択できます。
+アイコンサイズは px・em・rem で指定でき、空欄では文字サイズに連動します。
 コア・テーマ・プラグインが公式 API で登録したコレクションを利用します。
 リンク生成とページ判定は WordPress コアの処理を維持します。
 
@@ -33,6 +35,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 コアのリンク機能と元の標準矢印設定を使用できます。
 
 == Changelog ==
+
+= 0.2.0 =
+* 「前の投稿」「次の投稿」ブロックのカスタムアイコンに対応。
+* ページ送りと投稿ナビゲーションに、px・em・rem によるアイコンサイズ設定を追加。
 
 = 0.1.1 =
 * アイコン選択モーダルをコアに近い全画面表示・コレクションタブ・配色へ調整。

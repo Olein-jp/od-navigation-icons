@@ -2,7 +2,7 @@
 
 ## データと登録
 
-親 `core/query-pagination` のブロックコメントに `odpiEnabled`（boolean）、`odpiPreviousIcon` / `odpiNextIcon`（string）だけを追加する。SVGは保存しない。PHPの `register_block_type_args` とJSの `blocks.registerBlockType` で同じ定義を追加し、`od-pagination-icons/属性名` のコンテキストで子へ伝える。コアのsave関数は変更しない。
+親 `core/query-pagination` のブロックコメントに `odpiEnabled`（boolean）、`odpiPreviousIcon` / `odpiNextIcon`（string）、`odpiIconSize`（string）を追加する。SVGは保存しない。PHPの `register_block_type_args` とJSの `blocks.registerBlockType` で同じ定義を追加し、`od-pagination-icons/属性名` のコンテキストで子へ伝える。コアのsave関数は変更しない。
 
 `paginationArrow` の保存値は常にコアの値。カスタム有効時だけPHPの `render_block_context` とJSの `editor.BlockEdit` でarrowを描画させる。親の編集コンポーネントの属性は変更せず、コアのshowLabel制約も維持する。標準矢印がnoneの場合は、コア設定をarrow/chevronに変更してからラベル表示をオフにする。これによりプラグイン停止後も空のリンクにならない。オフにすると元の標準矢印設定へ戻る。
 
@@ -21,3 +21,9 @@ HTML APIでコアのアンカーと矢印span、その直下の矢印テキス�
 ## 配布
 
 フロントはPHPと共通CSSのみ。JSはエディター限定。ビルド成果物・PHP includes・翻訳・既存GitHub updaterを配布する。GitHub Actionsはlint・JSテスト・ビルドと実コアテストを行い、数値3桁のタグでインストール可能なZIPをReleaseに添付する。
+
+## 投稿ナビゲーションとサイズ
+
+`core/post-navigation-link` に `odpiEnabled`、`odpiIcon`、`odpiIconSize` を追加する。前後はコアの `type` で判定し、各ブロックが設定を保持する。カスタム有効時だけ `render_block_data` とエディターの編集コンポーネントへ渡す属性で `arrow` を上書きし、保存済みの矢印設定は保つ。PHPではコア出力の矢印span内の文字だけを置換する。リンク先、ラベル、投稿タイトル、分類による絞り込み、隣接投稿がない場合の挙動はコアに任せる。
+
+サイズは正の数値と px・em・rem の組み合わせだけを受け付ける。空欄・無効値は従来の `1em`。ページ送りは親コンテキストで前後へ共有し、投稿ナビゲーションは個別設定とする。公開画面ではSVG、編集画面ではプレビューのCSS変数 `--odpi-icon-size` へ反映する。コアの標準矢印と文字のサイズは変更しない。

@@ -34,6 +34,7 @@ test( 'アイコンの選択・キーボード操作・保存とエディター�
 	await selectPagination( page );
 	const toggle = page.getByRole( 'checkbox', { name: /Use custom icons|カスタムアイコンを使用/ } );
 	await expect( toggle ).toBeChecked();
+	await page.getByLabel( /^(Icon size|アイコンサイズ)$/ ).fill( '36' );
 	await page.getByRole( 'button', { name: /Choose icon|アイコンを選択/ } ).last().click();
 	const modal = page.getByRole( 'dialog' );
 	await expect( modal ).toBeVisible();
@@ -75,6 +76,7 @@ test( 'フロントのSVGとEnhanced Paginationの遷移', async ( { page } ) =>
 	const next = page.locator( 'a.wp-block-query-pagination-next' );
 	await expect( previous.locator( 'svg.odpi-icon' ) ).toHaveCount( 1 );
 	await expect( next.locator( 'svg.odpi-icon' ) ).toHaveCount( 1 );
+	await expect( next.locator( 'svg.odpi-icon' ) ).toHaveCSS( 'width', '36px' );
 	await expect( next ).toHaveAttribute( 'data-wp-on--click', 'core/query::actions.navigate' );
 	await next.click();
 	await expect( page ).toHaveURL( /query-9821-page=3/ );
@@ -157,4 +159,69 @@ test( '日本語と英語のUIを表示できる', async ( { page } ) => {
 	} finally {
 		cli( 'eval', "update_user_meta(1, 'locale', get_option('odpi_e2e_original_locale', '')); delete_option('odpi_e2e_original_locale');" );
 	}
+} );
+
+
+test( '投稿ナビゲーションのアイコン選択・サイズ・保存・標準設定への復帰', async ( { page } ) => {
+	const errors = [];
+	page.on( 'pageerror', ( error ) => errors.push( error.message ) );
+	await login( page );
+	await page.goto( `/wp-admin/post.php?post=${ fixture.navigationPost }&action=edit` );
+	await expect.poll( () => page.evaluate( () => !! window.wp?.data?.select( 'core/block-editor' )?.getBlocks()?.length ) ).toBe( true );
+	await page.evaluate( () => {
+		wp.data.dispatch( 'core/preferences' ).set( 'core/edit-post', 'welcomeGuide', false );
+		const block = wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ];
+		wp.data.dispatch( 'core/block-editor' ).selectBlock( block.clientId );
+		wp.data.dispatch( 'core/interface' ).enableComplementaryArea( 'core', 'edit-post/block' );
+	} );
+	const size = page.getByLabel( /^(Icon size|アイコンサイズ)$/ );
+	await expect( size ).toHaveValue( '32' );
+	const unit = page.getByLabel( /^(Size unit|サイズの単位)$/ );
+	await unit.selectOption( 'em' );
+	await size.fill( '1.5' );
+	await expect.poll( () => page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ].attributes.odpiIconSize ) ).toBe( '1.5em' );
+	await size.fill( '' );
+	await expect( unit ).toHaveValue( 'em' );
+	await unit.selectOption( 'px' );
+	await size.fill( '40' );
+	await page.getByRole( 'button', { name: /Choose icon|アイコンを選択/ } ).click();
+	const modal = page.getByRole( 'dialog' );
+	await modal.getByRole( 'tab', { name: 'ODPI E2E Collection', exact: true } ).click();
+	await modal.getByRole( 'searchbox' ).fill( 'test-1199' );
+	await modal.getByRole( 'button', { name: 'odpi-e2e/test-1199', exact: true } ).click();
+	const previewSize = () => page.evaluate( () => {
+		const doc = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentDocument || document;
+		const arrow = doc.querySelector( '.odpi-preview .wp-block-post-navigation-link__arrow-previous' );
+		return arrow ? getComputedStyle( arrow ).width : '';
+	} );
+	await expect.poll( previewSize ).toBe( '40px' );
+	await page.evaluate( async () => { await wp.data.dispatch( 'core/editor' ).savePost(); } );
+	await page.reload();
+	await expect.poll( () => page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ]?.attributes.odpiIconSize ) ).toBe( '40px' );
+	const saved = await page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ].attributes );
+	expect( saved.odpiIcon ).toBe( 'odpi-e2e/test-1199' );
+	expect( saved.arrow ).toBe( 'none' );
+	await page.goto( `/?p=${ fixture.navigationPost }` );
+	const previous = page.locator( '.wp-block-post-content .post-navigation-link-previous' );
+	await expect( previous.locator( '.odpi-icon' ) ).toHaveCSS( 'width', '40px' );
+	await expect( previous.locator( 'a' ) ).toHaveAttribute( 'rel', 'prev' );
+	const next = page.locator( '.wp-block-post-content .post-navigation-link-next .odpi-icon' );
+	await expect( next ).toHaveCount( 1 );
+	expect( await next.evaluate( ( icon ) => parseFloat( getComputedStyle( icon ).width ) / parseFloat( getComputedStyle( icon ).fontSize ) ) ).toBeCloseTo( 2 );
+	await page.goto( `/wp-admin/post.php?post=${ fixture.navigationPost }&action=edit` );
+	await expect.poll( () => page.evaluate( () => !! wp.data.select( 'core/block-editor' ).getBlocks().length ) ).toBe( true );
+	await page.evaluate( () => {
+		wp.data.dispatch( 'core/block-editor' ).selectBlock( wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ].clientId );
+	} );
+	await size.fill( '' );
+	await expect.poll( () => page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ].attributes.odpiIconSize ) ).toBe( '' );
+	const toggle = page.getByRole( 'checkbox', { name: /Use custom icons|カスタムアイコンを使用/ } );
+	await toggle.uncheck();
+	await page.evaluate( async () => { await wp.data.dispatch( 'core/editor' ).savePost(); } );
+	await page.goto( `/?p=${ fixture.navigationPost }` );
+	await expect( previous.locator( 'svg' ) ).toHaveCount( 0 );
+	await expect( previous.locator( '[class*="__arrow-"]' ) ).toHaveCount( 0 );
+	await expect( previous.locator( 'a' ) ).toHaveCount( 1 );
+	await page.screenshot( { path: 'test-results/post-navigation.png', fullPage: true } );
+	expect( errors ).toEqual( [] );
 } );

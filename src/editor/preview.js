@@ -4,6 +4,7 @@ import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { iconPath, previewSvg, useResource } from './icons';
 import { isLink } from './extend-block';
+import { iconSize } from './size';
 
 // エディターのDOMを書き換えず、公開wrapperPropsでコアの矢印にプレビューを重ねる。
 addFilter(
@@ -13,6 +14,11 @@ addFilter(
 		function PaginationPreview( props ) {
 			const values = useSelect(
 				( select ) => {
+					if ( props.name === 'core/post-navigation-link' ) {
+						return select( blockEditorStore ).getBlockAttributes(
+							props.clientId
+						);
+					}
 					if ( ! isLink( props.name ) ) {
 						return null;
 					}
@@ -28,16 +34,24 @@ addFilter(
 				},
 				[ props.clientId, props.name ]
 			);
+			const key =
+				props.name === 'core/query-pagination-previous'
+					? 'odpiPreviousIcon'
+					: 'odpiNextIcon';
 			const name = values?.odpiEnabled
 				? values[
-						props.name === 'core/query-pagination-previous'
-							? 'odpiPreviousIcon'
-							: 'odpiNextIcon'
+						props.name === 'core/post-navigation-link'
+							? 'odpiIcon'
+							: key
 					]
 				: '';
 			const icon = useResource( iconPath( name ) );
 			const wrapperProps = { ...props.wrapperProps };
-			if ( values?.odpiEnabled && values.showLabel === false ) {
+			if (
+				isLink( props.name ) &&
+				values?.odpiEnabled &&
+				values.showLabel === false
+			) {
 				wrapperProps[ 'aria-label' ] =
 					props.attributes.label ||
 					( props.name === 'core/query-pagination-previous'
@@ -67,6 +81,8 @@ addFilter(
 						style: {
 							...props.wrapperProps?.style,
 							'--odpi-preview': url,
+							'--odpi-icon-size':
+								iconSize( values.odpiIconSize ) || undefined,
 						},
 					} }
 				/>

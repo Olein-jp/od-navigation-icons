@@ -1,6 +1,7 @@
+/* stylelint-disable selector-class-pattern -- コアの投稿ナビゲーションのクラスを指定する。 */
 .odpi-icon {
-	width: 1em;
-	height: 1em;
+	width: var(--odpi-icon-size, 1em);
+	height: var(--odpi-icon-size, 1em);
 	fill: currentcolor;
 	flex-shrink: 0;
 	vertical-align: -0.125em;
@@ -8,7 +9,9 @@
 
 // コアの矢印spanの論理方向の余白をそのまま利用する。
 .wp-block-query-pagination-previous-arrow:has(.odpi-icon),
-.wp-block-query-pagination-next-arrow:has(.odpi-icon) {
+.wp-block-query-pagination-next-arrow:has(.odpi-icon),
+.wp-block-post-navigation-link__arrow-previous:has(.odpi-icon),
+.wp-block-post-navigation-link__arrow-next:has(.odpi-icon) {
 	display: inline-block;
 	transform: none !important;
 }
@@ -18,11 +21,13 @@
 }
 
 .odpi-preview .wp-block-query-pagination-previous-arrow,
-.odpi-preview .wp-block-query-pagination-next-arrow {
+.odpi-preview .wp-block-query-pagination-next-arrow,
+.odpi-preview .wp-block-post-navigation-link__arrow-previous,
+.odpi-preview .wp-block-post-navigation-link__arrow-next {
 	display: inline-block;
 	position: relative;
-	width: 1em;
-	height: 1em;
+	width: var(--odpi-icon-size, 1em);
+	height: var(--odpi-icon-size, 1em);
 	text-indent: -9999px;
 	vertical-align: -0.125em;
 	overflow: hidden;
@@ -42,7 +47,9 @@
 }
 
 .odpi-preview-fixed .wp-block-query-pagination-previous-arrow::before,
-.odpi-preview-fixed .wp-block-query-pagination-next-arrow::before {
+.odpi-preview-fixed .wp-block-query-pagination-next-arrow::before,
+.odpi-preview-fixed .wp-block-post-navigation-link__arrow-previous::before,
+.odpi-preview-fixed .wp-block-post-navigation-link__arrow-next::before {
 	mask: none;
 	background: var(--odpi-preview) center / contain no-repeat;
 }

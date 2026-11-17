@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: OD Pagination Icons 0.1.1\n"
+"Project-Id-Version: OD Pagination Icons 0.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/od-pagination-"
 "icons\n"
 "POT-Creation-Date: 2026-11-17T06:32:22+00:00\n"
@@ -29,9 +29,9 @@ msgstr "https://github.com/Olein-jp/od-pagination-icons"
 
 #. Description of the plugin
 #: od-pagination-icons.php
-msgid "Choose registered WordPress icons for Query Pagination links."
+msgid "Choose registered WordPress icons and sizes for Query Pagination and Post Navigation links."
 msgstr ""
-"クエリーのページ送りリンクに、WordPress に登録されたアイコンを設定します。"
+"ページ送りと前後の投稿リンクに、WordPress に登録されたアイコンとサイズを設定します。"
 
 #. Author of the plugin
 #: od-pagination-icons.php
@@ -137,3 +137,19 @@ msgstr "前のページのアイコン"
 #: build/index.js:3 src/editor/extend-block.js:112
 msgid "Next page icon"
 msgstr "次のページのアイコン"
+
+#: build/index.js:3 src/editor/extend-block.js
+msgid "Post link icon"
+msgstr "投稿リンクのアイコン"
+
+#: build/index.js:3 src/editor/IconSizeControl.js
+msgid "Icon size"
+msgstr "アイコンサイズ"
+
+#: build/index.js:3 src/editor/IconSizeControl.js
+msgid "Size unit"
+msgstr "サイズの単位"
+
+#: build/index.js:3 src/editor/IconSizeControl.js
+msgid "Leave empty to match the text size."
+msgstr "空欄にすると文字サイズに合わせます。"

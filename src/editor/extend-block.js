@@ -3,9 +3,11 @@ import { PanelBody, ToggleControl } from '@wordpress/components';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import IconPicker from './IconPicker';
+import IconSizeControl from './IconSizeControl';
 
 const attributes = {
 	odpiEnabled: { type: 'boolean', default: false },
+	odpiIconSize: { type: 'string', default: '' },
 	odpiPreviousIcon: { type: 'string', default: '' },
 	odpiNextIcon: { type: 'string', default: '' },
 };
@@ -26,6 +28,17 @@ export function extendSettings( settings, name ) {
 			...settings,
 			attributes: { ...settings.attributes, ...attributes },
 			providesContext: { ...settings.providesContext, ...context },
+		};
+	}
+	if ( name === 'core/post-navigation-link' ) {
+		return {
+			...settings,
+			attributes: {
+				...settings.attributes,
+				odpiEnabled: attributes.odpiEnabled,
+				odpiIconSize: attributes.odpiIconSize,
+				odpiIcon: { type: 'string', default: '' },
+			},
 		};
 	}
 	return isLink( name )
@@ -51,7 +64,8 @@ addFilter(
 	'od-pagination-icons/inspector',
 	( BlockEdit ) =>
 		function PaginationEdit( props ) {
-			if ( props.name !== 'core/query-pagination' ) {
+			const isPost = props.name === 'core/post-navigation-link';
+			if ( props.name !== 'core/query-pagination' && ! isPost ) {
 				const context =
 					isLink( props.name ) &&
 					props.context?.[ 'od-pagination-icons/odpiEnabled' ]
@@ -62,7 +76,14 @@ addFilter(
 			const { attributes: values, setAttributes } = props;
 			return (
 				<>
-					<BlockEdit { ...props } />
+					<BlockEdit
+						{ ...props }
+						attributes={
+							isPost && values.odpiEnabled
+								? { ...values, arrow: 'arrow' }
+								: values
+						}
+					/>
 					<InspectorControls>
 						<PanelBody
 							title={ __(
@@ -88,35 +109,63 @@ addFilter(
 											'od-pagination-icons'
 										) }
 									</p>
-									{ values.paginationArrow === 'none' && (
-										<p>
-											{ __(
-												'For icons without text, first choose Arrow or Chevron in the standard arrow setting, then turn off Show label text.',
+									{ ! isPost &&
+										values.paginationArrow === 'none' && (
+											<p>
+												{ __(
+													'For icons without text, first choose Arrow or Chevron in the standard arrow setting, then turn off Show label text.',
+													'od-pagination-icons'
+												) }
+											</p>
+										) }
+									{ isPost ? (
+										<IconPicker
+											label={ __(
+												'Post link icon',
 												'od-pagination-icons'
 											) }
-										</p>
+											value={ values.odpiIcon }
+											onChange={ ( value ) =>
+												setAttributes( {
+													odpiIcon: value,
+												} )
+											}
+										/>
+									) : (
+										<>
+											<IconPicker
+												label={ __(
+													'Previous page icon',
+													'od-pagination-icons'
+												) }
+												value={
+													values.odpiPreviousIcon
+												}
+												onChange={ ( value ) =>
+													setAttributes( {
+														odpiPreviousIcon: value,
+													} )
+												}
+											/>
+											<IconPicker
+												label={ __(
+													'Next page icon',
+													'od-pagination-icons'
+												) }
+												value={ values.odpiNextIcon }
+												onChange={ ( value ) =>
+													setAttributes( {
+														odpiNextIcon: value,
+													} )
+												}
+											/>
+										</>
 									) }
-									<IconPicker
-										label={ __(
-											'Previous page icon',
-											'od-pagination-icons'
-										) }
-										value={ values.odpiPreviousIcon }
+									<IconSizeControl
+										value={ values.odpiIconSize }
 										onChange={ ( value ) =>
 											setAttributes( {
-												odpiPreviousIcon: value,
-											} )
-										}
-									/>
-									<IconPicker
-										label={ __(
-											'Next page icon',
-											'od-pagination-icons'
-										) }
-										value={ values.odpiNextIcon }
-										onChange={ ( value ) =>
-											setAttributes( {
-												odpiNextIcon: value,
+												odpiIconSize: value,
 											} )
 										}
 									/>

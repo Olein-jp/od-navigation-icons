@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags: ['[0-9]*.[0-9]*.[0-9]*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+      - run: composer validate --strict
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: php -l od-pagination-icons.php
+      - run: composer lint
+      - name: 配布 ZIP を生成する
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python3 scripts/build-release.py --version "$RELEASE_TAG"
+      - name: GitHub Releases に添付する
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" dist/od-pagination-icons.zip --clobber
+          else
+            gh release create "$RELEASE_TAG" dist/od-pagination-icons.zip --verify-tag --title "$RELEASE_TAG" --generate-notes
+          fi

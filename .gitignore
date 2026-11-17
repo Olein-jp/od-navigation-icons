@@ -1,0 +1,7 @@
+/vendor/
+/node_modules/
+/dist/
+/.wp-env.override.json
+/.env
+/.env.*
+.DS_Store

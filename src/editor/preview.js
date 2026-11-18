@@ -9,7 +9,7 @@ import { iconSize } from './size';
 // エディターのDOMを書き換えず、公開wrapperPropsでコアの矢印にプレビューを重ねる。
 addFilter(
 	'editor.BlockListBlock',
-	'od-pagination-icons/preview',
+	'od-navigation-icons/preview',
 	( BlockListBlock ) =>
 		function PaginationPreview( props ) {
 			const values = useSelect(

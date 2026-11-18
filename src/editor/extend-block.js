@@ -19,7 +19,7 @@ export const isLink = ( name ) =>
 export function extendSettings( settings, name ) {
 	const context = Object.fromEntries(
 		Object.keys( attributes ).map( ( key ) => [
-			`od-pagination-icons/${ key }`,
+			`od-navigation-icons/${ key }`,
 			key,
 		] )
 	);
@@ -55,20 +55,20 @@ export function extendSettings( settings, name ) {
 }
 addFilter(
 	'blocks.registerBlockType',
-	'od-pagination-icons/attributes',
+	'od-navigation-icons/attributes',
 	extendSettings
 );
 
 addFilter(
 	'editor.BlockEdit',
-	'od-pagination-icons/inspector',
+	'od-navigation-icons/inspector',
 	( BlockEdit ) =>
 		function PaginationEdit( props ) {
 			const isPost = props.name === 'core/post-navigation-link';
 			if ( props.name !== 'core/query-pagination' && ! isPost ) {
 				const context =
 					isLink( props.name ) &&
-					props.context?.[ 'od-pagination-icons/odpiEnabled' ]
+					props.context?.[ 'od-navigation-icons/odpiEnabled' ]
 						? { ...props.context, paginationArrow: 'arrow' }
 						: props.context;
 				return <BlockEdit { ...props } context={ context } />;
@@ -88,13 +88,13 @@ addFilter(
 						<PanelBody
 							title={ __(
 								'Custom icons',
-								'od-pagination-icons'
+								'od-navigation-icons'
 							) }
 						>
 							<ToggleControl
 								label={ __(
 									'Use custom icons',
-									'od-pagination-icons'
+									'od-navigation-icons'
 								) }
 								checked={ !! values.odpiEnabled }
 								onChange={ ( enabled ) =>
@@ -106,7 +106,7 @@ addFilter(
 									<p>
 										{ __(
 											'Custom mode overrides the standard arrow display. Disabling it restores your standard arrow setting. An empty selection uses the standard arrow.',
-											'od-pagination-icons'
+											'od-navigation-icons'
 										) }
 									</p>
 									{ ! isPost &&
@@ -114,7 +114,7 @@ addFilter(
 											<p>
 												{ __(
 													'For icons without text, first choose Arrow or Chevron in the standard arrow setting, then turn off Show label text.',
-													'od-pagination-icons'
+													'od-navigation-icons'
 												) }
 											</p>
 										) }
@@ -122,7 +122,7 @@ addFilter(
 										<IconPicker
 											label={ __(
 												'Post link icon',
-												'od-pagination-icons'
+												'od-navigation-icons'
 											) }
 											value={ values.odpiIcon }
 											onChange={ ( value ) =>
@@ -136,7 +136,7 @@ addFilter(
 											<IconPicker
 												label={ __(
 													'Previous page icon',
-													'od-pagination-icons'
+													'od-navigation-icons'
 												) }
 												value={
 													values.odpiPreviousIcon
@@ -150,7 +150,7 @@ addFilter(
 											<IconPicker
 												label={ __(
 													'Next page icon',
-													'od-pagination-icons'
+													'od-navigation-icons'
 												) }
 												value={ values.odpiNextIcon }
 												onChange={ ( value ) =>

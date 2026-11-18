@@ -2,7 +2,7 @@
 /**
  * コアのリンクを保持したアイコン描画。
  *
- * @package OD_Pagination_Icons
+ * @package OD_Navigation_Icons
  */
 
 /**
@@ -99,12 +99,12 @@ function odpi_replace_arrow( $html, $svg, $direction, $icon_only = false ) {
  * @return string
  */
 function odpi_render_icon( $html, $parsed, $block ) {
-	if ( empty( $block->context['od-pagination-icons/odpiEnabled'] ) ) {
+	if ( empty( $block->context['od-navigation-icons/odpiEnabled'] ) ) {
 		return $html;
 	}
 	$previous  = 'core/query-pagination-previous' === $parsed['blockName'];
 	$key       = $previous ? 'odpiPreviousIcon' : 'odpiNextIcon';
-	$svg       = odpi_get_icon( $block->context[ 'od-pagination-icons/' . $key ] ?? '', $block->context['od-pagination-icons/odpiIconSize'] ?? '' );
+	$svg       = odpi_get_icon( $block->context[ 'od-navigation-icons/' . $key ] ?? '', $block->context['od-navigation-icons/odpiIconSize'] ?? '' );
 	$icon_only = isset( $block->context['showLabel'] ) && ! $block->context['showLabel'];
 	return odpi_replace_arrow( $html, $svg, $previous ? 'previous' : 'next', $icon_only );
 }

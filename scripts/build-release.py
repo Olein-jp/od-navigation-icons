@@ -10,7 +10,7 @@ import tempfile
 from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parent.parent
-SLUG = "od-pagination-icons"
+SLUG = "od-navigation-icons"
 
 
 def main():

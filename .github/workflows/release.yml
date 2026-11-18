@@ -23,7 +23,7 @@ jobs:
           coverage: none
       - run: composer validate --strict
       - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: php -l od-pagination-icons.php
+      - run: php -l od-navigation-icons.php
       - run: composer lint
       - uses: actions/setup-node@v4
         with:
@@ -42,7 +42,7 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" dist/od-pagination-icons.zip --clobber
+            gh release upload "$RELEASE_TAG" dist/od-navigation-icons.zip --clobber
           else
-            gh release create "$RELEASE_TAG" dist/od-pagination-icons.zip --verify-tag --title "$RELEASE_TAG" --generate-notes
+            gh release create "$RELEASE_TAG" dist/od-navigation-icons.zip --verify-tag --title "$RELEASE_TAG" --generate-notes
           fi

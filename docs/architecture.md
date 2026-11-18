@@ -2,7 +2,7 @@
 
 ## データと登録
 
-親 `core/query-pagination` のブロックコメントに `odpiEnabled`（boolean）、`odpiPreviousIcon` / `odpiNextIcon`（string）、`odpiIconSize`（string）を追加する。SVGは保存しない。PHPの `register_block_type_args` とJSの `blocks.registerBlockType` で同じ定義を追加し、`od-pagination-icons/属性名` のコンテキストで子へ伝える。コアのsave関数は変更しない。
+親 `core/query-pagination` のブロックコメントに `odpiEnabled`（boolean）、`odpiPreviousIcon` / `odpiNextIcon`（string）、`odpiIconSize`（string）を追加する。SVGは保存しない。PHPの `register_block_type_args` とJSの `blocks.registerBlockType` で同じ定義を追加し、`od-navigation-icons/属性名` のコンテキストで子へ伝える。コアのsave関数は変更しない。
 
 `paginationArrow` の保存値は常にコアの値。カスタム有効時だけPHPの `render_block_context` とJSの `editor.BlockEdit` でarrowを描画させる。親の編集コンポーネントの属性は変更せず、コアのshowLabel制約も維持する。標準矢印がnoneの場合は、コア設定をarrow/chevronに変更してからラベル表示をオフにする。これによりプラグイン停止後も空のリンクにならない。オフにすると元の標準矢印設定へ戻る。
 

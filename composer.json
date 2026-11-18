@@ -1,6 +1,6 @@
 {
-  "name": "olein-jp/od-pagination-icons",
-  "description": "OD Pagination Icons WordPress plugin.",
+  "name": "olein-jp/od-navigation-icons",
+  "description": "OD Navigation Icons WordPress plugin.",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "require": {

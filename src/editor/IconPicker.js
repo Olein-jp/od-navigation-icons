@@ -46,7 +46,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 	const error = collections.error || icons.error;
 	return (
 		<Modal
-			title={ __( 'Icon library', 'od-pagination-icons' ) }
+			title={ __( 'Icon library', 'od-navigation-icons' ) }
 			onRequestClose={ onClose }
 			className="odpi-library"
 			isFullScreen
@@ -60,20 +60,20 @@ function IconLibrary( { value, onChange, onClose } ) {
 					>
 						{ __(
 							'Could not load icons. Check your connection and permissions.',
-							'od-pagination-icons'
+							'od-navigation-icons'
 						) }
 						<Button
 							variant="secondary"
 							onClick={ () => setRetry( retry + 1 ) }
 						>
-							{ __( 'Retry', 'od-pagination-icons' ) }
+							{ __( 'Retry', 'od-navigation-icons' ) }
 						</Button>
 					</Notice>
 				) }
 
 				<div className="odpi-library-search">
 					<SearchControl
-						label={ __( 'Search icons', 'od-pagination-icons' ) }
+						label={ __( 'Search icons', 'od-navigation-icons' ) }
 						value={ search }
 						onChange={ ( text ) => {
 							setSearch( text );
@@ -117,7 +117,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 											/* translators: %d: number of matching icons. */
 											__(
 												'%d icons found',
-												'od-pagination-icons'
+												'od-navigation-icons'
 											),
 											filtered.length
 										) }
@@ -166,7 +166,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 										<p className="odpi-library-empty">
 											{ __(
 												'No results found.',
-												'od-pagination-icons'
+												'od-navigation-icons'
 											) }
 										</p>
 									) }
@@ -181,7 +181,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 										>
 											{ __(
 												'Previous results',
-												'od-pagination-icons'
+												'od-navigation-icons'
 											) }
 										</Button>
 										<span>
@@ -189,7 +189,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 												/* translators: 1: current page, 2: total pages. */
 												__(
 													'%1$d / %2$d',
-													'od-pagination-icons'
+													'od-navigation-icons'
 												),
 												currentPage + 1,
 												pages
@@ -206,7 +206,7 @@ function IconLibrary( { value, onChange, onClose } ) {
 										>
 											{ __(
 												'Next results',
-												'od-pagination-icons'
+												'od-navigation-icons'
 											) }
 										</Button>
 									</div>
@@ -241,16 +241,16 @@ export default function IconPicker( { label, value, onChange } ) {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'This icon is unavailable. The standard arrow will be used; the saved selection is retained.',
-						'od-pagination-icons'
+						'od-navigation-icons'
 					) }
 				</Notice>
 			) }
 			<Button variant="secondary" onClick={ () => setOpen( true ) }>
-				{ __( 'Choose icon', 'od-pagination-icons' ) }
+				{ __( 'Choose icon', 'od-navigation-icons' ) }
 			</Button>
 			{ value && (
 				<Button variant="tertiary" onClick={ () => onChange( '' ) }>
-					{ __( 'Clear selection', 'od-pagination-icons' ) }
+					{ __( 'Clear selection', 'od-navigation-icons' ) }
 				</Button>
 			) }
 			{ open && (

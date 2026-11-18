@@ -92,14 +92,14 @@ test( '外部コレクションの停止と再登録、プラグイン停止時�
 		cli( 'option', 'delete', 'odpi_e2e_icons_disabled' );
 		await page.reload();
 		await expect( page.locator( '.wp-block-query-pagination-next svg' ) ).toHaveCount( 1 );
-		cli( 'plugin', 'deactivate', 'od-pagination-icons' );
+		cli( 'plugin', 'deactivate', 'od-navigation-icons' );
 		await page.reload();
 		await expect( page.locator( '.wp-block-query-pagination-next svg' ) ).toHaveCount( 0 );
 		await page.locator( 'a.wp-block-query-pagination-next' ).click();
 		await expect( page ).toHaveURL( /query-9821-page=3/ );
 	} finally {
 		cli( 'option', 'delete', 'odpi_e2e_icons_disabled' );
-		cli( 'plugin', 'activate', 'od-pagination-icons' );
+		cli( 'plugin', 'activate', 'od-navigation-icons' );
 	}
 } );
 

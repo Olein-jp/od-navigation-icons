@@ -1,10 +1,10 @@
-=== OD Pagination Icons ===
+=== OD Navigation Icons ===
 Contributors: olein
 Tags: pagination, icons, query-loop, block-editor
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 コアのリンク機能と元の標準矢印設定を使用できます。
 
 == Changelog ==
+
+= 0.2.1 =
+* 名称を OD Navigation Icons、スラッグを od-navigation-icons に統一。
+* 更新先・翻訳・配布 ZIP を新スラッグに対応。
+* 旧版を無効化して新しい ZIP をインストールしてください。保存済みのアイコンとサイズは引き継がれます。
 
 = 0.2.0 =
 * 「前の投稿」「次の投稿」ブロックのカスタムアイコンに対応。

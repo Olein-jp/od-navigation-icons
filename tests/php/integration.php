@@ -2,7 +2,7 @@
 /**
  * wp eval-file で実行する実コア統合テスト。作成した投稿は必ず削除する。
  *
- * @package OD_Pagination_Icons
+ * @package OD_Navigation_Icons
  */
 
 global $odpi_checks;
@@ -25,7 +25,7 @@ try {
 	odpi_assert( function_exists( 'wp_get_icon' ), 'Icons APIが存在する' );
 	$parent = WP_Block_Type_Registry::get_instance()->get_registered( 'core/query-pagination' );
 	odpi_assert( isset( $parent->attributes['odpiEnabled'] ), '親属性が登録される' );
-	odpi_assert( 'odpiNextIcon' === $parent->provides_context['od-pagination-icons/odpiNextIcon'], 'コンテキストが登録される' );
+	odpi_assert( 'odpiNextIcon' === $parent->provides_context['od-navigation-icons/odpiNextIcon'], 'コンテキストが登録される' );
 	wp_register_icon_collection( 'odpi-test', array( 'label' => 'ODPI Test' ) );
 	wp_register_icon( 'odpi-test/star', array( 'label' => 'Test star', 'content' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M2 2h20v20H2z"/></svg>' ) );
 	odpi_assert( str_contains( odpi_get_icon( 'odpi-test/star' ), 'odpi-icon' ), '外部コレクションを取得できる' );

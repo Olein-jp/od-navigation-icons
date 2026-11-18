@@ -10,10 +10,10 @@ export default function IconSizeControl( { value, onChange } ) {
 	return (
 		<>
 			<TextControl
-				label={ __( 'Icon size', 'od-pagination-icons' ) }
+				label={ __( 'Icon size', 'od-navigation-icons' ) }
 				help={ __(
 					'Leave empty to match the text size.',
-					'od-pagination-icons'
+					'od-navigation-icons'
 				) }
 				type="number"
 				min="0.1"
@@ -27,7 +27,7 @@ export default function IconSizeControl( { value, onChange } ) {
 				__nextHasNoMarginBottom
 			/>
 			<SelectControl
-				label={ __( 'Size unit', 'od-pagination-icons' ) }
+				label={ __( 'Size unit', 'od-navigation-icons' ) }
 				value={ unit }
 				options={ [ 'px', 'em', 'rem' ].map( ( item ) => ( {
 					label: item,

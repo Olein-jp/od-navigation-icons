@@ -2,7 +2,7 @@
 /**
  * コアブロックの保存属性とコンテキストを拡張する。
  *
- * @package OD_Pagination_Icons
+ * @package OD_Navigation_Icons
  */
 
 /**
@@ -33,7 +33,7 @@ function odpi_register_attributes( $args, $name ) {
 	);
 	$context    = array();
 	foreach ( $attributes as $key => $schema ) {
-		$context[ 'od-pagination-icons/' . $key ] = $key;
+		$context[ 'od-navigation-icons/' . $key ] = $key;
 	}
 	if ( 'core/query-pagination' === $name ) {
 		$args['attributes']       = array_merge( $args['attributes'] ?? array(), $attributes );
@@ -65,7 +65,7 @@ add_filter( 'register_block_type_args', 'odpi_register_attributes', 10, 2 );
  * @return array
  */
 function odpi_render_context( $context, $parsed ) {
-	if ( ! empty( $context['od-pagination-icons/odpiEnabled'] ) && in_array( $parsed['blockName'], array( 'core/query-pagination-previous', 'core/query-pagination-next' ), true ) ) {
+	if ( ! empty( $context['od-navigation-icons/odpiEnabled'] ) && in_array( $parsed['blockName'], array( 'core/query-pagination-previous', 'core/query-pagination-next' ), true ) ) {
 		$context['paginationArrow'] = 'arrow';
 	}
 	return $context;

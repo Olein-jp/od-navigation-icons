@@ -1,6 +1,6 @@
 {
-  "name": "od-pagination-icons",
-  "version": "0.2.0",
+  "name": "od-navigation-icons",
+  "version": "0.2.1",
   "private": true,
   "engines": {
     "node": ">=24.18.0"
@@ -11,21 +11,21 @@
     "env:status": "wp-env status",
     "env:logs": "wp-env logs",
     "env:cli": "wp-env run cli wp",
-    "i18n:pot": "wp-env run cli --env-cwd=wp-content/plugins/od-pagination-icons wp i18n make-pot . languages/od-pagination-icons.pot --domain=od-pagination-icons --exclude=vendor,node_modules,dist,tests",
-    "i18n:mo": "wp-env run cli --env-cwd=wp-content/plugins/od-pagination-icons wp i18n make-mo languages",
+    "i18n:pot": "wp-env run cli --env-cwd=wp-content/plugins/od-navigation-icons wp i18n make-pot . languages/od-navigation-icons.pot --domain=od-navigation-icons --exclude=vendor,node_modules,dist,tests",
+    "i18n:mo": "wp-env run cli --env-cwd=wp-content/plugins/od-navigation-icons wp i18n make-mo languages",
     "release:build": "python3 scripts/build-release.py",
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "lint:js": "wp-scripts lint-js src tests/js",
     "lint:css": "wp-scripts lint-style \"src/**/*.scss\"",
     "test:js": "wp-scripts test-unit-js --runInBand",
-    "test:php": "wp-env run cli wp eval-file wp-content/plugins/od-pagination-icons/tests/php/integration.php",
+    "test:php": "wp-env run cli wp eval-file wp-content/plugins/od-navigation-icons/tests/php/integration.php",
     "test:e2e": "playwright test",
     "format": "wp-scripts format src tests/js",
     "check": "npm run lint:js && npm run lint:css && npm run test:js && npm run build",
-    "test:e2e:setup": "wp-env run cli wp eval-file wp-content/plugins/od-pagination-icons/tests/e2e/setup.php",
-    "test:e2e:cleanup": "wp-env run cli wp eval-file wp-content/plugins/od-pagination-icons/tests/e2e/cleanup.php",
-    "i18n:json": "wp-env run cli --env-cwd=wp-content/plugins/od-pagination-icons wp i18n make-json languages --no-purge"
+    "test:e2e:setup": "wp-env run cli wp eval-file wp-content/plugins/od-navigation-icons/tests/e2e/setup.php",
+    "test:e2e:cleanup": "wp-env run cli wp eval-file wp-content/plugins/od-navigation-icons/tests/e2e/cleanup.php",
+    "i18n:json": "wp-env run cli --env-cwd=wp-content/plugins/od-navigation-icons wp i18n make-json languages --no-purge"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",

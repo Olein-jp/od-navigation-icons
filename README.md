@@ -1,4 +1,4 @@
-# OD Pagination Icons
+# OD Navigation Icons
 
 クエリーループの「ページ送り」と「前の投稿」「次の投稿」ブロックを拡張し、前後のリンクに WordPress Icons API の登録済みアイコンとサイズを設定するプラグインです。コア・テーマ・プラグインのコレクションを利用でき、URL生成・ページ判定・Enhanced Paginationはコアが処理します。
 
@@ -7,7 +7,11 @@
 - WordPress 7.1 以上、PHP 8.1 以上
 - 開発: Docker、Node.js 24.18 以上（`.nvmrc`）、npm、PHP、Composer 2、Python 3
 
-配布用の `dist/od-pagination-icons.zip` または GitHub Releases に添付されたZIPを、WordPressの「プラグインを追加」からアップロードし、有効化します。GitHubが自動生成するSource code ZIPには実行時依存が含まれません。
+配布用の `dist/od-navigation-icons.zip` または GitHub Releases に添付されたZIPを、WordPressの「プラグインを追加」からアップロードし、有効化します。GitHubが自動生成するSource code ZIPには実行時依存が含まれません。
+
+## 旧版からの移行（0.2.1）
+
+プラグイン名とスラッグを変更したため、旧版を無効化し、新しい配布 ZIP をアップロードして「OD Navigation Icons」を有効化してください。旧版と新版を同時に有効化しないでください。保存済みのブロック属性を維持しているため、選択済みアイコンとサイズは引き継がれます。動作確認後に旧版を削除できます。
 
 ## 使い方
 
@@ -32,7 +36,7 @@ npm ci
 composer install
 npm run build
 npm run env:start
-npm run env:cli -- plugin activate od-pagination-icons
+npm run env:cli -- plugin activate od-navigation-icons
 composer lint
 npm run check
 npm run test:php
@@ -53,25 +57,25 @@ PHPテストは実コアを使うWP-CLI統合テストです。作成した投�
 
 ## 翻訳
 
-日本語PO/MOとエディター用JSONを同梱します。すべての独自UIは `od-pagination-icons` ドメインです。
+日本語PO/MOとエディター用JSONを同梱します。すべての独自UIは `od-navigation-icons` ドメインです。
 
 ```sh
 npm run i18n:pot
 # POを更新・翻訳後
 npm run i18n:mo
-npm run env:cli -- i18n make-json wp-content/plugins/od-pagination-icons/languages --no-purge
+npm run env:cli -- i18n make-json wp-content/plugins/od-navigation-icons/languages --no-purge
 ```
 
 ## ビルドとリリース
 
 ```sh
 npm run build
-npm run release:build -- --version 0.2.0
+npm run release:build -- --version 0.2.1
 ```
 
-出力は `dist/od-pagination-icons.zip`。PHP、ビルド成果物、翻訳、既存の `inc2734/wp-github-plugin-updater` を含み、開発ツール・テスト・ローカル設定は含めません。
+出力は `dist/od-navigation-icons.zip`。PHP、ビルド成果物、翻訳、既存の `inc2734/wp-github-plugin-updater` を含み、開発ツール・テスト・ローカル設定は含めません。
 
-数値3桁のバージョンタグ（例: `0.2.0`）をpushすると、GitHub Actionsが品質確認・ビルドを行い、インストール可能なZIPをGitHub Releasesへ添付します。タグとPHPヘッダー・package.json・readme.txtのバージョンを合わせてください。`v`接頭辞やプレリリースタグは対象外です。公開結果はGitHub ReleasesとActionsで確認できます。
+数値3桁のバージョンタグ（例: `0.2.1`）をpushすると、GitHub Actionsが品質確認・ビルドを行い、インストール可能なZIPをGitHub Releasesへ添付します。タグとPHPヘッダー・package.json・readme.txtのバージョンを合わせてください。`v`接頭辞やプレリリースタグは対象外です。公開結果はGitHub ReleasesとActionsで確認できます。
 
 ## 技術情報と制約
 

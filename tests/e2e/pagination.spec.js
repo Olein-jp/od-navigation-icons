@@ -195,12 +195,25 @@ test( '投稿ナビゲーションのアイコン選択・サイズ・保存・�
 		return arrow ? getComputedStyle( arrow ).width : '';
 	} );
 	await expect.poll( previewSize ).toBe( '40px' );
+	const iconOnly = page.getByRole( 'checkbox', { name: /Show icon only|アイコンのみ表示/ } );
+	await iconOnly.check();
+	await expect.poll( () => page.evaluate( () => {
+		const doc = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentDocument || document;
+		const block = doc.querySelector( '.odpi-post-icon-only.wp-block-post-navigation-link' );
+		return block ? getComputedStyle( block.querySelector( 'a' ) ).width : '';
+	} ) ).toBe( '1px' );
+	await page.evaluate( () => {
+		wp.data.dispatch( 'core/block-editor' ).selectBlock( wp.data.select( 'core/block-editor' ).getBlocks()[ 1 ].clientId );
+	} );
+	await iconOnly.check();
+
 	await page.evaluate( async () => { await wp.data.dispatch( 'core/editor' ).savePost(); } );
 	await page.reload();
 	await expect.poll( () => page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ]?.attributes.odpiIconSize ) ).toBe( '40px' );
 	const saved = await page.evaluate( () => wp.data.select( 'core/block-editor' ).getBlocks()[ 0 ].attributes );
 	expect( saved.odpiIcon ).toBe( 'odpi-e2e/test-1199' );
 	expect( saved.arrow ).toBe( 'none' );
+	expect( saved.odpiIconOnly ).toBe( true );
 	await page.goto( `/?p=${ fixture.navigationPost }` );
 	const previous = page.locator( '.wp-block-post-content .post-navigation-link-previous' );
 	await expect( previous.locator( '.odpi-icon' ) ).toHaveCSS( 'width', '40px' );
@@ -208,6 +221,21 @@ test( '投稿ナビゲーションのアイコン選択・サイズ・保存・�
 	const next = page.locator( '.wp-block-post-content .post-navigation-link-next .odpi-icon' );
 	await expect( next ).toHaveCount( 1 );
 	expect( await next.evaluate( ( icon ) => parseFloat( getComputedStyle( icon ).width ) / parseFloat( getComputedStyle( icon ).fontSize ) ) ).toBeCloseTo( 2 );
+	for ( const [ direction, label ] of [ [ 'previous', '前の投稿' ], [ 'next', '次の投稿' ] ] ) {
+		const link = page.locator( `.wp-block-post-content .post-navigation-link-${ direction } a.odpi-post-icon-only` );
+		await expect( link ).toHaveAccessibleName( label );
+		await expect( link.locator( 'svg.odpi-icon' ) ).toBeVisible();
+		await expect( link.locator( 'span.odpi-post-link-text' ) ).toHaveCSS( 'width', '1px' );
+		const href = await link.getAttribute( 'href' );
+		if ( direction === 'previous' ) {
+			await link.locator( 'svg' ).click();
+		} else {
+			await link.focus();
+			await page.keyboard.press( 'Enter' );
+		}
+		await expect( page ).toHaveURL( href );
+		await page.goto( `/?p=${ fixture.navigationPost }` );
+	}
 	await page.goto( `/wp-admin/post.php?post=${ fixture.navigationPost }&action=edit` );
 	await expect.poll( () => page.evaluate( () => !! wp.data.select( 'core/block-editor' ).getBlocks().length ) ).toBe( true );
 	await page.evaluate( () => {

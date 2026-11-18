@@ -47,6 +47,7 @@ addFilter(
 				: '';
 			const icon = useResource( iconPath( name ) );
 			const wrapperProps = { ...props.wrapperProps };
+			const className = `${ props.className || '' }${ props.name === 'core/post-navigation-link' && values?.odpiEnabled && values.odpiIconOnly ? ' odpi-post-icon-only' : '' }`;
 			if (
 				isLink( props.name ) &&
 				values?.odpiEnabled &&
@@ -62,6 +63,7 @@ addFilter(
 				return (
 					<BlockListBlock
 						{ ...props }
+						className={ className }
 						wrapperProps={ wrapperProps }
 					/>
 				);
@@ -75,7 +77,7 @@ addFilter(
 			return (
 				<BlockListBlock
 					{ ...props }
-					className={ `${ props.className || '' } odpi-preview${ fixedColor ? ' odpi-preview-fixed' : '' }` }
+					className={ `${ className } odpi-preview${ fixedColor ? ' odpi-preview-fixed' : '' }` }
 					wrapperProps={ {
 						...wrapperProps,
 						style: {

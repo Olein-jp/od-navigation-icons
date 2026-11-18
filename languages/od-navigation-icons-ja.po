@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: OD Navigation Icons 0.2.1\n"
+"Project-Id-Version: OD Navigation Icons 0.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/od-navigation-"
 "icons\n"
 "POT-Creation-Date: 2026-11-17T06:32:22+00:00\n"
@@ -153,3 +153,19 @@ msgstr "サイズの単位"
 #: build/index.js:3 src/editor/IconSizeControl.js
 msgid "Leave empty to match the text size."
 msgstr "空欄にすると文字サイズに合わせます。"
+
+#: build/index.js:3 src/editor/extend-block.js
+msgid "Show icon only"
+msgstr "アイコンのみ表示"
+
+#: build/index.js:3 src/editor/extend-block.js
+msgid "The icon remains clickable. Link text is kept for screen readers."
+msgstr "アイコンをクリックして移動できます。リンクの文字は読み上げ用に残します。"
+
+#: includes/render.php
+msgid "Previous post"
+msgstr "前の投稿"
+
+#: includes/render.php
+msgid "Next post"
+msgstr "次の投稿"

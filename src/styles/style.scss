@@ -53,3 +53,31 @@
 	mask: none;
 	background: var(--odpi-preview) center / contain no-repeat;
 }
+
+// 公開画面ではアイコンを含むアンカーをクリック・フォーカス対象にする。
+a.odpi-post-icon-only {
+	display: inline-flex;
+	align-items: center;
+
+	> [class*="wp-block-post-navigation-link__arrow-"] {
+		margin-inline: 0;
+	}
+}
+
+// リンク文字を読み上げ用に保持する。編集画面のコアラベルにも適用する。
+.odpi-post-link-text,
+.odpi-post-icon-only.wp-block-post-navigation-link > a {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip-path: inset(50%) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+}
+
+.odpi-post-icon-only.wp-block-post-navigation-link > span {
+	margin-inline: 0;
+}

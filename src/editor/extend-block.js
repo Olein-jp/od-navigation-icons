@@ -38,6 +38,7 @@ export function extendSettings( settings, name ) {
 				odpiEnabled: attributes.odpiEnabled,
 				odpiIconSize: attributes.odpiIconSize,
 				odpiIcon: { type: 'string', default: '' },
+				odpiIconOnly: { type: 'boolean', default: false },
 			},
 		};
 	}
@@ -118,6 +119,24 @@ addFilter(
 												) }
 											</p>
 										) }
+									{ isPost && (
+										<ToggleControl
+											label={ __(
+												'Show icon only',
+												'od-navigation-icons'
+											) }
+											help={ __(
+												'The icon remains clickable. Link text is kept for screen readers.',
+												'od-navigation-icons'
+											) }
+											checked={ !! values.odpiIconOnly }
+											onChange={ ( iconOnly ) =>
+												setAttributes( {
+													odpiIconOnly: iconOnly,
+												} )
+											}
+										/>
+									) }
 									{ isPost ? (
 										<IconPicker
 											label={ __(

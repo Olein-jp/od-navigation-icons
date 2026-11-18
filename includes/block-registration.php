@@ -43,6 +43,10 @@ function odpi_register_attributes( $args, $name ) {
 			$args['attributes'] ?? array(),
 			array(
 				'odpiEnabled'  => $attributes['odpiEnabled'],
+				'odpiIconOnly' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
 				'odpiIconSize' => $attributes['odpiIconSize'],
 				'odpiIcon'     => array(
 					'type'    => 'string',

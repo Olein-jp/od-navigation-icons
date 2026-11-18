@@ -3,7 +3,7 @@
  * Plugin Name: OD Navigation Icons
  * Plugin URI: https://github.com/Olein-jp/od-navigation-icons
  * Description: Choose registered WordPress icons and sizes for Query Pagination and Post Navigation links.
- * Version: 0.2.1
+ * Version: 0.2.2
  * Requires at least: 7.1
  * Requires PHP: 8.1
  * Author: Koji Kuno
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ODPI_VERSION', '0.2.1' );
+define( 'ODPI_VERSION', '0.2.2' );
 define( 'ODPI_FILE', __FILE__ );
 
 require_once __DIR__ . '/includes/block-registration.php';

@@ -4,7 +4,7 @@ Tags: pagination, icons, query-loop, block-editor
 Requires at least: 7.1
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 「ページ送り」ブロックの設定でカスタムアイコンを有効にし、前後それぞれのアイコンを選択できます。
 「前の投稿」「次の投稿」ブロックでは、それぞれの設定からアイコンを選択できます。
+「アイコンのみ表示」を有効にすると、文字を読み上げ用に残し、アイコンのクリックやキーボード操作で移動できます。
 アイコンサイズは px・em・rem で指定でき、空欄では文字サイズに連動します。
 コア・テーマ・プラグインが公式 API で登録したコレクションを利用します。
 リンク生成とページ判定は WordPress コアの処理を維持します。
@@ -35,6 +36,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 コアのリンク機能と元の標準矢印設定を使用できます。
 
 == Changelog ==
+
+= 0.2.2 =
+* 「前の投稿」「次の投稿」に「アイコンのみ表示」設定を追加。
+* アイコンをリンク内へ配置し、クリックとキーボード操作で移動できるよう改善。
+* リンクの文字は読み上げ用に保持。未選択・取得できないアイコンは標準矢印で表示。
 
 = 0.2.1 =
 * 名称を OD Navigation Icons、スラッグを od-navigation-icons に統一。

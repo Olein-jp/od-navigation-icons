@@ -112,7 +112,7 @@ add_filter( 'render_block_core/query-pagination-previous', 'odpi_render_icon', 1
 add_filter( 'render_block_core/query-pagination-next', 'odpi_render_icon', 10, 3 );
 
 /**
- * 投稿ナビゲーションの標準矢印だけを差し替える。
+ * 投稿ナビゲーションの矢印を差し替え、アイコンのみ表示に対応する。
  *
  * @param string $html コア出力.
  * @param array  $parsed 解析済みブロック.
@@ -123,8 +123,9 @@ function odpi_render_post_icon( $html, $parsed ) {
 	if ( empty( $attributes['odpiEnabled'] ) ) {
 		return $html;
 	}
-	$svg = odpi_get_icon( $attributes['odpiIcon'] ?? '', $attributes['odpiIconSize'] ?? '' );
-	if ( '' === $svg ) {
+	$icon_only = ! empty( $attributes['odpiIconOnly'] );
+	$svg       = odpi_get_icon( $attributes['odpiIcon'] ?? '', $attributes['odpiIconSize'] ?? '' );
+	if ( '' === $svg && ! $icon_only ) {
 		return $html;
 	}
 	$direction = 'previous' === ( $attributes['type'] ?? 'next' ) ? 'previous' : 'next';
@@ -159,10 +160,47 @@ function odpi_render_post_icon( $html, $parsed ) {
 	while ( str_contains( $html, $marker ) ) {
 		$marker = 'ODPI_ICON_' . wp_unique_id();
 	}
+	$arrow = $p->get_modifiable_text();
 	$p->set_modifiable_text( $marker );
 	if ( ! $p->next_token() || 'SPAN' !== $p->get_tag() || ! $p->is_tag_closer() ) {
 		return $html;
 	}
-	return str_replace( $marker, $svg, $p->get_updated_html() );
+	$output = $p->get_updated_html();
+	if ( $icon_only ) {
+		$output = odpi_post_icon_only( $output, $marker, $direction );
+	}
+	return str_replace( $marker, '' !== $svg ? $svg : esc_html( $arrow ), $output );
 }
 add_filter( 'render_block_core/post-navigation-link', 'odpi_render_post_icon', 10, 2 );
+
+/**
+ * 検証済みのコア矢印をアンカー内へ移し、元のリンク文字を読み上げ用に残す。
+ *
+ * @param string $html 矢印を一意なマーカーへ置換したHTML.
+ * @param string $marker 矢印テキストのマーカー.
+ * @param string $direction previous または next.
+ * @return string
+ */
+function odpi_post_icon_only( $html, $marker, $direction ) {
+	// コアの単一wrapper・矢印span・リンクという構造だけを扱う.
+	$arrow = '(<span\b[^>]*>' . preg_quote( $marker, '~' ) . '</span>)';
+	$link  = '(<a\b[^>]*>)(.*?)(</a>)';
+	$parts = 'previous' === $direction ? $arrow . $link : $link . $arrow;
+	if ( ! preg_match( '~\A(<div\b[^>]*>)' . $parts . '(</div>)\z~s', $html, $matches ) ) {
+		return $html;
+	}
+	$previous = 'previous' === $direction;
+	$opening  = $matches[ $previous ? 3 : 2 ];
+	$label    = $matches[ $previous ? 4 : 3 ];
+	$icon     = $matches[ $previous ? 2 : 5 ];
+	// 空白だけのカスタムラベルでもリンクの目的を読み上げられるようにする.
+	if ( '' === trim( html_entity_decode( wp_strip_all_tags( $label ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) {
+		$label = esc_html( 'previous' === $direction ? __( 'Previous post', 'od-navigation-icons' ) : __( 'Next post', 'od-navigation-icons' ) );
+	}
+	$p = new WP_HTML_Tag_Processor( $opening );
+	if ( ! $p->next_tag( 'A' ) ) {
+		return $html;
+	}
+	$p->add_class( 'odpi-post-icon-only' );
+	return $matches[1] . $p->get_updated_html() . $icon . '<span class="odpi-post-link-text">' . $label . '</span></a>' . $matches[6];
+}

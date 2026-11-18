@@ -102,7 +102,23 @@ try {
 			odpi_assert( ! str_contains( $render( array_merge( $attrs, array( 'odpiEnabled' => false ) ) ), '__arrow-' ), '無効化すると元の矢印なしへ戻る' );
 			odpi_assert( $core === $render( array_merge( $attrs, array( 'odpiIcon' => 'missing/icon' ) ) ), '未登録アイコンは標準矢印へ戻る' );
 			odpi_assert( $core === $render( array_merge( $attrs, array( 'odpiIcon' => '' ) ) ), '未選択でも標準矢印へ戻る' );
+			$only_attrs = array_merge( $attrs, array( 'odpiIconOnly' => true ) );
+			foreach ( array( 'core/plus', '', 'missing/icon' ) as $icon ) {
+				$only = $render( array_merge( $only_attrs, array( 'odpiIcon' => $icon ) ) );
+				$p = new WP_HTML_Tag_Processor( $only );
+				odpi_assert( $p->next_tag( 'A' ) && $p->has_class( 'odpi-post-icon-only' ), 'アイコンのみ表示はアンカーを保持する' );
+				$target = get_permalink( $odpi_ids[ 'previous' === $direction ? 0 : 2 ] );
+				odpi_assert( $target === $p->get_attribute( 'href' ), 'アイコンのみ表示でも前後のURLと分類指定を保持する' );
+				odpi_assert( ( 'previous' === $direction ? 'prev' : 'next' ) === $p->get_attribute( 'rel' ), 'リンクのrel属性を保持する' );
+				odpi_assert( $p->next_tag( 'SPAN' ) && $p->has_class( 'wp-block-post-navigation-link__arrow-' . $direction ) && 'true' === $p->get_attribute( 'aria-hidden' ), '装飾アイコンをリンクの子にする' );
+				odpi_assert( str_contains( $only, '<span class="odpi-post-link-text">' ), '元のリンク内容を読み上げ用のspanに残す' );
+				odpi_assert( str_contains( $only, 'core/plus' === $icon ? 'odpi-icon' : $arrow ), '未選択・未登録でも標準矢印でアイコンのみ表示を維持する' );
+				odpi_assert( $render( array_merge( $attrs, array( 'odpiEnabled' => false ) ) ) === $render( array_merge( $only_attrs, array( 'odpiEnabled' => false, 'odpiIcon' => $icon ) ) ), 'カスタム無効時はアイコンのみ設定も適用しない' );
+			}
+			$empty_label = $render( array_merge( $only_attrs, array( 'label' => ' ', 'showTitle' => false ) ) );
+			odpi_assert( str_contains( $empty_label, esc_html( 'previous' === $direction ? __( 'Previous post', 'od-navigation-icons' ) : __( 'Next post', 'od-navigation-icons' ) ) ), '空白ラベルに前後の読み上げ文字を補う' );
 		}
+		$attrs['odpiIconOnly'] = true;
 		$boundary = 'previous' === $direction ? $odpi_ids[0] : $odpi_ids[3];
 		$GLOBALS['wp_query'] = new WP_Query( array( 'p' => $boundary ) );
 		$GLOBALS['post'] = get_post( $boundary );
